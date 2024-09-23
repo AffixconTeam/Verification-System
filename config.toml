@@ -1,0 +1,8 @@
+[database]
+user = "TuanSeedin"
+password = "J!2af!G1j"
+account = "tannder-lz30435"
+warehouse = "COMPUTE_WH"
+database = "DATA_VERIFICATION"
+schema = "PUBLIC"
+role = "ACCOUNTADMIN"
