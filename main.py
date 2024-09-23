@@ -76,9 +76,9 @@ def verify_user(data: UserData):
         # name_match_str = df.apply(update_name_str, axis=1)[0]
 
         df['name_match_str'] = df.apply(update_name_str, axis=1)
-        # df['first_name_similarity'] = df['FIRST_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.first_name.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
-        # df['middle_name_similarity'] = df['MIDDLE_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.middle_name.lower())*100).apply(lambda score: int(score) if score > 65 else 0) 
-        # df['sur_name_similarity'] = df['SUR_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.sur_name.lower())*100).apply(lambda score: score if int(score) > 65 else 0) 
+        df['first_name_similarity'] = df['FIRST_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.first_name.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
+        df['middle_name_similarity'] = df['MIDDLE_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.middle_name.lower())*100).apply(lambda score: int(score) if score > 65 else 0) 
+        df['sur_name_similarity'] = df['SUR_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.sur_name.lower())*100).apply(lambda score: score if int(score) > 65 else 0) 
 
         # if df['name_match_str'][0][0] == 'T':
         #     df['first_name_similarity'] = 100
@@ -178,9 +178,12 @@ def verify_user(data: UserData):
         # df_transposed = df.T
         # df_transposed.columns = ['Results']
 
-
         return {
-            "name_match_str":df.name_match_str[0]
+            "name_match_str":df.name_match_str[0],
+            "first_name_similarity":df.first_name_similarity[0],
+            "middle_name_similarity":df.middle_name_similarity[0],
+            "sur_name_similarity":df.sur_name_similarity[0]
+
         }
     
         # return {
