@@ -32,7 +32,7 @@ class UserData(BaseModel):
     mobile: str
     email: str
 
-@app.get("/verify_user/")
+@app.post("/verify_user/")
 def verify_user(data):
     try:
         cursor = conn.cursor()
