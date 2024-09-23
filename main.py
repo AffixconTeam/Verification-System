@@ -73,9 +73,9 @@ def verify_user(data: UserData):
                 name_Str = apply_name_matching(row, name_Str, db_column, input_field, str_index)
             return name_Str
 
-        name_match_str = df.apply(update_name_str, axis=1)[0]
+        # name_match_str = df.apply(update_name_str, axis=1)[0]
 
-        # df['name_match_str'] = df.apply(update_name_str, axis=1)
+        df['name_match_str'] = df.apply(update_name_str, axis=1)
         # df['first_name_similarity'] = df['FIRST_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.first_name.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
         # df['middle_name_similarity'] = df['MIDDLE_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.middle_name.lower())*100).apply(lambda score: int(score) if score > 65 else 0) 
         # df['sur_name_similarity'] = df['SUR_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.sur_name.lower())*100).apply(lambda score: score if int(score) > 65 else 0) 
@@ -180,7 +180,7 @@ def verify_user(data: UserData):
 
 
         return {
-            "name_match_str":name_match_str
+            "name_match_str":df.name_match_str[0]
         }
     
         # return {
