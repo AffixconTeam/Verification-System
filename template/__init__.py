@@ -41,5 +41,5 @@ conn = snowflake.connector.connect(
     warehouse=os.getenv('warehouse'),
     database=os.getenv('database'),
     schema=os.getenv('schema'),
-    role = os.getenv('role'),
+    role = os.getenv('role')
 )
