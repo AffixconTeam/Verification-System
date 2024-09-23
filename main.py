@@ -59,10 +59,26 @@ def verify_user(data: UserData):
             raise HTTPException(status_code=404, detail="No match found")
 
 
+        # Your existing logic starts here
+        fields = [
+            ('FIRST_NAME', data.first_name, 0),
+            ('MIDDLE_NAME', data.middle_name, 1),
+            ('SUR_NAME', data.sur_name, 2)
+        ]
+
+        def update_name_str(row):
+            name_Str = "XXX"
+            for db_column, input_field, str_index in fields:
+                name_Str = apply_name_matching(row, name_Str, db_column, input_field, str_index)
+            return name_Str
+
+        name_match_str = df.apply(update_name_str, axis=1)
 
         # # # Perform similarity matching
-        # df['first_name_similarity'] = (textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100)
-        # df['address_line1_similarity'] = (textdistance.jaro_winkler(df.AD1[0].lower(), data.address_line1.lower()) * 100)
+        first_name_similarity = (textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100)
+        middle_name_similarity = (textdistance.jaro_winkler(df.MIDDLE_NAME[0].lower(), data.first_name.lower()) * 100)
+
+        daddress_line1_similarity = (textdistance.jaro_winkler(df.AD1[0].lower(), data.address_line1.lower()) * 100)
 
         # # More matching logic...
 
@@ -76,8 +92,11 @@ def verify_user(data: UserData):
         return {
             'first_db':df.FIRST_NAME[0].lower(),
             'first_input':data.first_name.lower(),
-            'score1': textdistance.jaro_winkler('jila','jila'),
-            'score':textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower())
+            'name_match_str':name_match_str,
+            'first_name_similarity':first_name_similarity,
+            'middle_name_similarity':middle_name_similarity,
+            "daddress_line1_similarity":daddress_line1_similarity
+
 
 
         }
