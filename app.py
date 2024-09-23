@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from main import verify_user  # Import the verification logic
+import uvicorn
 
 app = FastAPI()
 
@@ -31,3 +32,6 @@ def verify(data: UserData):
 @app.get("/")
 def root():
     return {"message": "Welcome to the Data Verification API"}
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
