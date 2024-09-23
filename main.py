@@ -11,13 +11,12 @@ import uvicorn
 app = FastAPI()
 
 conn = snowflake.connector.connect(
-    user = "TuanSeedin",
-    password = "J!2af!G1j",
-    account = "tannder-lz30435",
-    warehouse = "COMPUTE_WH",
-    database = "DATA_VERIFICATION",
-    schema = "PUBLIC",
-    role = "ACCOUNTADMIN"
+    user='your_username',
+    password='your_password',
+    account='your_account',
+    warehouse='your_warehouse',
+    database='your_database',
+    schema='public'
 )
 
 class UserData(BaseModel):
@@ -33,7 +32,7 @@ class UserData(BaseModel):
     email: str
 
 @app.post("/verify_user/")
-def verify_user(data):
+def verify_user(data: UserData):
     try:
         cursor = conn.cursor()
 
