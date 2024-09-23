@@ -75,8 +75,8 @@ def verify_user(data: UserData):
 
         return {
             'first_db':df.FIRST_NAME[0].lower(),
-            'first_input':df.first_name.lower(),
-            'score':textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100,
+            'first_input':df.first_name.lower()
+            # 'score':textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100,
 
 
         }
