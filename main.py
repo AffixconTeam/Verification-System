@@ -194,13 +194,13 @@ def verify_user(data: UserData):
             'FIRST_NAME':df.FIRST_NAME[0],             ##ok
             'MIDDLE_NAME':df.MIDDLE_NAME[0],             ##ok
             'SUR_NAME':df.SUR_NAME[0],           ##ok
-            # 'DOB':df.DOB[0],
+            'DOB':str(df.DOB[0]),
             'AD1':df.AD1[0],           ##ok
             "SUBURB":df.SUBURB[0],
             'STATE':df.STATE[0],
-            # 'POSTCODE':df.POSTCODE[0],
-            # 'PHONE2_MOBILE':df.PHONE2_MOBILE[0],
-            # 'EMAILADDRESS':df.EMAILADDRESS[0],
+            'POSTCODE':str(df.POSTCODE[0]),
+            'PHONE2_MOBILE':str(df.PHONE2_MOBILE[0]),
+            'EMAILADDRESS':df.EMAILADDRESS[0],
             "name_match_str":df.name_match_str[0],           ##ok
             "first_name_similarity":first_name_similarity,           ##ok
             "middle_name_similarity":middle_name_similarity,           ##ok
