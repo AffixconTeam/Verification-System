@@ -66,6 +66,11 @@ def verify_user(data: UserData):
 
         if df.empty:
             raise HTTPException(status_code=404, detail="No match found")
+        
+        result = df.to_dict(orient="records")
+
+        return {"results": result}
+
 
         # # Perform similarity matching
         # df['full_name_similarity'] = (textdistance.jaro_winkler(df['FIRST_NAME'][0].lower(), data['first_name'].lower()) * 100)
@@ -79,7 +84,6 @@ def verify_user(data: UserData):
         #     "address_similarity": df['address_line_similarity'][0],
         #     "results": df.to_dict()
         # }
-        return df
     
     except snowflake.connector.errors.ProgrammingError as e:
         raise HTTPException(status_code=500, detail=f"Error executing query: {e}")
