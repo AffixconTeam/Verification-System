@@ -76,9 +76,11 @@ def verify_user(data: UserData):
         # name_match_str = df.apply(update_name_str, axis=1)[0]
 
         df['name_match_str'] = df.apply(update_name_str, axis=1)
-        first_name_similarity = df['FIRST_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.first_name.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
-        middle_name_similarity = df['MIDDLE_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.middle_name.lower())*100).apply(lambda score: int(score) if score > 65 else 0) 
-        sur_name_similarity = df['SUR_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.sur_name.lower())*100).apply(lambda score: score if int(score) > 65 else 0) 
+        first_name_similarity = max(textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100, 0) if textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100 > 65 else 0
+
+        # first_name_similarity = (textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
+        # middle_name_similarity = df['MIDDLE_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.middle_name.lower())*100).apply(lambda score: int(score) if score > 65 else 0) 
+        # sur_name_similarity = df['SUR_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.sur_name.lower())*100).apply(lambda score: score if int(score) > 65 else 0) 
 
         # if df['name_match_str'][0][0] == 'T':
         #     df['first_name_similarity'] = 100
@@ -180,9 +182,9 @@ def verify_user(data: UserData):
 
         return {
             "name_match_str":df.name_match_str[0],
-            "first_name_similarity":first_name_similarity,
-            "middle_name_similarity":middle_name_similarity,
-            "sur_name_similarity":sur_name_similarity
+            "first_name_similarity":first_name_similarity
+            # "middle_name_similarity":middle_name_similarity,
+            # "sur_name_similarity":sur_name_similarity
 
         }
     
