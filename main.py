@@ -11,7 +11,6 @@ import uvicorn
 app = FastAPI()
 
 
-
 class UserData(BaseModel):
     first_name: str
     middle_name: str
@@ -24,6 +23,7 @@ class UserData(BaseModel):
     mobile: str
     email: str
 
+
 @app.post("/verify_user/")
 def verify_user(data: UserData):
     try:
@@ -32,10 +32,10 @@ def verify_user(data: UserData):
         query = f"""
             WITH InputData AS (
                 SELECT
-                    '{data['first_name']}' AS first_name_input,
-                    '{data['middle_name']}' AS middle_name_input,
-                    '{data['sur_name']}' AS sur_name_input,
-                    '{data['dob']}' AS dob_input
+                    '{data.first_name}' AS first_name_input,
+                    '{data.middle_name}' AS middle_name_input,
+                    '{data.sur_name}' AS sur_name_input,
+                    '{data.dob}' AS dob_input
             )
             SELECT
                 First_name, middle_name, sur_name, dob, ad1, suburb, state, postcode, PHONE2_MOBILE, EMAILADDRESS
@@ -52,14 +52,12 @@ def verify_user(data: UserData):
             LIMIT 1
         """
 
-        # query = "select * from DATA_VERIFICATION.PUBLIC.AU_RESIDENTIAL AS resident limit 1"
-
         cursor.execute(query)
         df = cursor.fetch_pandas_all()
 
         if df.empty:
             raise HTTPException(status_code=404, detail="No match found")
-        
+
         result = df.to_dict(orient="records")
 
         return {"results": result}
