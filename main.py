@@ -191,20 +191,20 @@ def verify_user(data: UserData):
         # }
     
         return {
-            'FIRST_NAME':df.FIRST_NAME[0],
-            'MIDDLE_NAME':df.MIDDLE_NAME[0],
-            'SUR_NAME':df.SUR_NAME[0],
+            'FIRST_NAME':df.FIRST_NAME[0],             ##ok
+            'MIDDLE_NAME':df.MIDDLE_NAME[0],             ##ok
+            'SUR_NAME':df.SUR_NAME[0],           ##ok
             # 'DOB':df.DOB[0],
-            # 'AD1':df.AD1[0],
+            'AD1':df.AD1[0],
             # "SUBURB":df.SUBURB[0],
             # 'STATE':df.STATE[0],
             # 'POSTCODE':df.POSTCODE[0],
             # 'PHONE2_MOBILE':df.PHONE2_MOBILE[0],
             # 'EMAILADDRESS':df.EMAILADDRESS[0],
-            "name_match_str":df.name_match_str[0],
-            "first_name_similarity":first_name_similarity,
-            "middle_name_similarity":middle_name_similarity,
-            "sur_name_similarity":sur_name_similarity
+            "name_match_str":df.name_match_str[0],           ##ok
+            "first_name_similarity":first_name_similarity,           ##ok
+            "middle_name_similarity":middle_name_similarity,           ##ok
+            "sur_name_similarity":sur_name_similarity           ##ok
 
         }
     except snowflake.connector.errors.ProgrammingError as e:
