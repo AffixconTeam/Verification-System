@@ -1,7 +1,7 @@
-# from fastapi import FastAPI, HTTPException
-# from pydantic import BaseModel
-# from main import verify_user  # Import the verification logic
-# import uvicorn
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from main import verify_user  # Import the verification logic
+import uvicorn
 
 # app = FastAPI()
 
