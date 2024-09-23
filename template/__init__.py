@@ -1,10 +1,10 @@
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os 
 import snowflake.connector
 
 
 
-load_dotenv()
+# load_dotenv()
 # conn = snowflake.connector.connect(
 #     user=os.getenv('user'),
 #     password=os.getenv('password'),
