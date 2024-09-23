@@ -11,13 +11,13 @@ import uvicorn
 app = FastAPI()
 
 conn = snowflake.connector.connect(
-    user='your_username',
-    password='your_password',
-    account='your_account',
-    warehouse='your_warehouse',
-    database='your_database',
-    schema='public'
-)
+    user='TuanSeedin',
+    password='J!2af!G1j',
+    account='hg21418.ap-south-1',
+    warehouse='COMPUTE_WH',
+    database='DATA_VERIFICATION',
+    schema='PUBLIC',
+    role='ACCOUNTADMIN')
 
 class UserData(BaseModel):
     first_name: str
