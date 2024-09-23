@@ -77,6 +77,8 @@ def verify_user(data: UserData):
 
         df['name_match_str'] = df.apply(update_name_str, axis=1)
         first_name_similarity = max(textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100, 0) if textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100 > 65 else 0
+        middle_name_similarity = max(textdistance.jaro_winkler(df.MIDDLE_NAME[0].lower(), data.middle_name.lower()) * 100, 0) if textdistance.jaro_winkler(df.MIDDLE_NAME[0].lower(), data.middle_name.lower()) * 100 > 65 else 0
+        sur_name_similarity = max(textdistance.jaro_winkler(df.SUR_NAME[0].lower(), data.sur_name.lower()) * 100, 0) if textdistance.jaro_winkler(df.SUR_NAME[0].lower(), data.sur_name.lower()) * 100 > 65 else 0
 
         # first_name_similarity = (textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
         # middle_name_similarity = df['MIDDLE_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.middle_name.lower())*100).apply(lambda score: int(score) if score > 65 else 0) 
@@ -180,27 +182,31 @@ def verify_user(data: UserData):
         # df_transposed = df.T
         # df_transposed.columns = ['Results']
 
-        return {
-            "name_match_str":df.name_match_str[0],
-            "first_name_similarity":first_name_similarity
-            # "middle_name_similarity":middle_name_similarity,
-            # "sur_name_similarity":sur_name_similarity
-
-        }
-    
         # return {
-        #     'FIRST_NAME':df.FIRST_NAME[0],
-        #     'MIDDLE_NAME':df.MIDDLE_NAME[0],
-        #     'SUR_NAME':df.SUR_NAME[0],
-        #     'DOB':df.DOB[0],
-        #     'AD1':df.AD1[0],
-        #     "SUBURB":df.SUBURB[0],
-        #     'STATE':df.STATE[0],
-        #     'POSTCODE':df.POSTCODE[0],
-        #     'PHONE2_MOBILE':df.PHONE2_MOBILE[0],
-        #     'EMAILADDRESS':df.EMAILADDRESS[0]
+        #     "name_match_str":df.name_match_str[0],
+        #     "first_name_similarity":first_name_similarity,
+        #     "middle_name_similarity":middle_name_similarity,
+        #     "sur_name_similarity":sur_name_similarity
 
         # }
+    
+        return {
+            'FIRST_NAME':df.FIRST_NAME[0],
+            'MIDDLE_NAME':df.MIDDLE_NAME[0],
+            'SUR_NAME':df.SUR_NAME[0],
+            'DOB':df.DOB[0],
+            'AD1':df.AD1[0],
+            "SUBURB":df.SUBURB[0],
+            'STATE':df.STATE[0],
+            'POSTCODE':df.POSTCODE[0],
+            'PHONE2_MOBILE':df.PHONE2_MOBILE[0],
+            'EMAILADDRESS':df.EMAILADDRESS[0],
+            "name_match_str":df.name_match_str[0],
+            "first_name_similarity":first_name_similarity,
+            "middle_name_similarity":middle_name_similarity,
+            "sur_name_similarity":sur_name_similarity
+
+        }
     except snowflake.connector.errors.ProgrammingError as e:
         raise HTTPException(status_code=500, detail=f"Error executing query: {e}")
 
