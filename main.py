@@ -195,9 +195,9 @@ def verify_user(data: UserData):
             'MIDDLE_NAME':df.MIDDLE_NAME[0],             ##ok
             'SUR_NAME':df.SUR_NAME[0],           ##ok
             # 'DOB':df.DOB[0],
-            'AD1':df.AD1[0],
-            # "SUBURB":df.SUBURB[0],
-            # 'STATE':df.STATE[0],
+            'AD1':df.AD1[0],           ##ok
+            "SUBURB":df.SUBURB[0],
+            'STATE':df.STATE[0],
             # 'POSTCODE':df.POSTCODE[0],
             # 'PHONE2_MOBILE':df.PHONE2_MOBILE[0],
             # 'EMAILADDRESS':df.EMAILADDRESS[0],
