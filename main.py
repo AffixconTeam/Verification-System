@@ -36,28 +36,30 @@ def verify_user(data):
     try:
         cursor = conn.cursor()
 
-        query = f"""
-            WITH InputData AS (
-                SELECT
-                    '{data['first_name']}' AS first_name_input,
-                    '{data['middle_name']}' AS middle_name_input,
-                    '{data['sur_name']}' AS sur_name_input,
-                    '{data['dob']}' AS dob_input
-            )
-            SELECT
-                First_name, middle_name, sur_name, dob, ad1, suburb, state, postcode, PHONE2_MOBILE, EMAILADDRESS
-            FROM
-                DATA_VERIFICATION.PUBLIC.AU_RESIDENTIAL AS resident,
-                InputData AS input
-            WHERE
-                (
-                    (LOWER(input.sur_name_input) IS NOT NULL AND LOWER(input.sur_name_input) != '' AND LOWER(resident.sur_name) LIKE LOWER(input.sur_name_input))
-                    OR (LOWER(input.middle_name_input) IS NOT NULL AND LOWER(input.middle_name_input) != '' AND LOWER(resident.middle_name) = LOWER(input.middle_name_input))
-                    OR (LOWER(input.first_name_input) IS NOT NULL AND LOWER(input.first_name_input) != '' AND LOWER(resident.first_name) = LOWER(input.first_name_input))
-                    AND (input.dob_input IS NOT NULL AND input.dob_input != '' AND resident.DOB = input.dob_input)
-                )
-            LIMIT 1
-        """
+        # query = f"""
+        #     WITH InputData AS (
+        #         SELECT
+        #             '{data['first_name']}' AS first_name_input,
+        #             '{data['middle_name']}' AS middle_name_input,
+        #             '{data['sur_name']}' AS sur_name_input,
+        #             '{data['dob']}' AS dob_input
+        #     )
+        #     SELECT
+        #         First_name, middle_name, sur_name, dob, ad1, suburb, state, postcode, PHONE2_MOBILE, EMAILADDRESS
+        #     FROM
+        #         DATA_VERIFICATION.PUBLIC.AU_RESIDENTIAL AS resident,
+        #         InputData AS input
+        #     WHERE
+        #         (
+        #             (LOWER(input.sur_name_input) IS NOT NULL AND LOWER(input.sur_name_input) != '' AND LOWER(resident.sur_name) LIKE LOWER(input.sur_name_input))
+        #             OR (LOWER(input.middle_name_input) IS NOT NULL AND LOWER(input.middle_name_input) != '' AND LOWER(resident.middle_name) = LOWER(input.middle_name_input))
+        #             OR (LOWER(input.first_name_input) IS NOT NULL AND LOWER(input.first_name_input) != '' AND LOWER(resident.first_name) = LOWER(input.first_name_input))
+        #             AND (input.dob_input IS NOT NULL AND input.dob_input != '' AND resident.DOB = input.dob_input)
+        #         )
+        #     LIMIT 1
+        # """
+
+        query = "select * from DATA_VERIFICATION.PUBLIC.AU_RESIDENTIAL AS resident limit 1"
 
         cursor.execute(query)
         df = cursor.fetch_pandas_all()
