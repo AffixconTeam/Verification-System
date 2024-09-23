@@ -191,7 +191,7 @@ def verify_user(data: UserData):
         # }
     
         return {
-            # 'FIRST_NAME':df.FIRST_NAME[0],
+            'FIRST_NAME':df.FIRST_NAME[0],
             # 'MIDDLE_NAME':df.MIDDLE_NAME[0],
             # 'SUR_NAME':df.SUR_NAME[0],
             # 'DOB':df.DOB[0],
