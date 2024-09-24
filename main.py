@@ -210,7 +210,10 @@ def verify_user(data: UserData):
             "address_line_similarity"  : address_line_similarity,
             "suburb_similarity"  : suburb_similarity,
             "state_similarity"  :  state_similarity,
-            "postcde_similarity" : postcde_similarity
+            "postcde_similarity" : postcde_similarity,
+            "test1": df.AD1[0].lower(),
+            "test2": data.address_line1[0].lower(),
+            "test_score" : textdistance.jaro_winkler(df.AD1[0].lower(),data.address_line1[0].lower()) * 100
             # "Address_Match_Level": df.Address_Match_Level[0],
             # "Overall Matching Level"  : df.Overall_Matching_Level[0],
             # "Overall Verified Level "  : df.Overall_Verified_Level[0]
