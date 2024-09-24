@@ -229,7 +229,7 @@ async def batch_process_verify_users(file: UploadFile = File(...)):
     try:
         # Read CSV file as pandas DataFrame
         contents = await file.read()
-        df_users = pd.read_csv(io.StringIO(contents.decode("utf-8")))
+        df_users = pd.read_csv(io.StringIO(contents.decode("utf-8"))).fillna("")
 
         results = []
         cursor = conn.cursor()
