@@ -250,8 +250,8 @@ async def batch_process_verify_users(file: UploadFile = File(...)):
                 mobile= row["mobile"], 
                 email= row["email"]
             )
-            df_result = verify_user(data)  # Call verify_user with UserData object
-            results.append({"index": index, "result": df_result})
+            # df_result = verify_user(data)  # Call verify_user with UserData object
+            results.append({"index": index, "result": df_users})
 
         return {"results": results}
     
