@@ -30,8 +30,8 @@ class UserData(BaseModel):
 def verify_user(data: UserData):
     try:
         cursor = conn.cursor()
-        global query
-        def query():
+        global verify_function
+        def verify_function():
             query = f"""
                 WITH InputData AS (
                     SELECT
@@ -218,7 +218,7 @@ def verify_user(data: UserData):
                 "Overall Verified Level "  : Overall_Verified_Level
 
             }
-        query()
+        verify_function()
     except snowflake.connector.errors.ProgrammingError as e:
         raise HTTPException(status_code=500, detail=f"Error executing query: {e}")
 
@@ -238,7 +238,7 @@ async def batch_process_verify_users(file: UploadFile = File(...)):
 
         # Loop through each user record in the CSV
         for index, row in df_users.iterrows():
-            df_result = query()
+            df_result = verify_function()
             if df_result.empty:
                 results.append({"index": index, "result": "No match found"})
             else: 
