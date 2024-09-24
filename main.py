@@ -206,8 +206,8 @@ def verify_user(data: UserData):
             "Name Match Level": df.Name_Match_Level[0],
             "full_name_similarity":  full_name_similarity,
             "dob_match": df['dob_match'][0],
-            "Address Matching String" : df.Address_Matching_String[0]
-            # "address_line_similarity"  : address_line_similarity,
+            "Address Matching String" : df.Address_Matching_String[0],
+            "address_line_similarity"  : address_line_similarity
             # "suburb_similarity"  : suburb_similarity,
             # "state_similarity"  :  state_similarity,
             # "postcde_similarity" : postcde_similarity,
