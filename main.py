@@ -161,18 +161,18 @@ def verify_user(data: UserData):
         postcde_similarity = max(textdistance.jaro_winkler(df.POSTCODE[0],data.postcode[0]) * 100, 0)
         weight4 = 20 if postcde_similarity ==100 else 0 
         
-        total_weight = weight1+weight2+weight3+weight4
-        if total_weight > 90:
-            match_level = f'Full Match, {total_weight}'
-        elif 80 <= total_weight <= 90:
-            match_level = f'Partial Match, {total_weight}'
-        else:
-            match_level = 'No Match'
-        df['Address_Match_Level'] = match_level
+        # total_weight = weight1+weight2+weight3+weight4
+        # if total_weight > 90:
+        #     match_level = f'Full Match, {total_weight}'
+        # elif 80 <= total_weight <= 90:
+        #     match_level = f'Partial Match, {total_weight}'
+        # else:
+        #     match_level = 'No Match'
+        # df['Address_Match_Level'] = match_level
 
-        matching_levels = get_matching_level(df,data.dob,data.mobile,data.email,full_name_similarity,total_weight)
-        df['Overall_Matching_Level'] = ', '.join(matching_levels)
-        df["Overall_Verified_Level"] = append_based_on_verification(df,verified_by=True)
+        # matching_levels = get_matching_level(df,data.dob,data.mobile,data.email,full_name_similarity,total_weight)
+        # df['Overall_Matching_Level'] = ', '.join(matching_levels)
+        # df["Overall_Verified_Level"] = append_based_on_verification(df,verified_by=True)
 
         # # st.write("source",source)
         # # st.write("parsed_address",parsed_address)
@@ -210,10 +210,10 @@ def verify_user(data: UserData):
             "address_line_similarity"  : address_line_similarity,
             "suburb_similarity"  : suburb_similarity,
             "state_similarity"  :  state_similarity,
-            "postcde_similarity" : postcde_similarity,
-            "Address_Match_Level": df.Address_Match_Level[0],
-            "Overall Matching Level"  : df.Overall_Matching_Level[0],
-            "Overall Verified Level "  : df.Overall_Verified_Level[0]
+            "postcde_similarity" : postcde_similarity
+            # "Address_Match_Level": df.Address_Match_Level[0],
+            # "Overall Matching Level"  : df.Overall_Matching_Level[0],
+            # "Overall Verified Level "  : df.Overall_Verified_Level[0]
 
         }
     except snowflake.connector.errors.ProgrammingError as e:
