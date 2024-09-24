@@ -158,17 +158,17 @@ def verify_user(data: UserData):
         state_similarity = max(textdistance.jaro_winkler(df.STATE[0].lower(),data.state.lower()) * 100, 0) if textdistance.jaro_winkler(df.STATE[0].lower(),data.state[0].lower()) * 100 > 65 else 0
         weight3 = 10 if 90<=state_similarity <=100 else  0
 
-        postcde_similarity = max(textdistance.jaro_winkler(str(df.POSTCODE[0]),str(data.postcode)) * 100, 0)  if textdistance.jaro_winkler(str(df.POSTCODE[0]),str(data.postcode[0])) * 100 == 100 else 0
+        postcde_similarity = max(textdistance.jaro_winkler(str(df.POSTCODE[0]),str(data.postcode)) * 100, 0)  if textdistance.jaro_winkler(str(df.POSTCODE[0]),str(data.postcode)) * 100 == 100 else 0
         weight4 = 20 if postcde_similarity ==100 else 0 
         
-        # total_weight = weight1+weight2+weight3+weight4
-        # if total_weight > 90:
-        #     match_level = f'Full Match, {total_weight}'
-        # elif 80 <= total_weight <= 90:
-        #     match_level = f'Partial Match, {total_weight}'
-        # else:
-        #     match_level = 'No Match'
-        # df['Address_Match_Level'] = match_level
+        total_weight = weight1+weight2+weight3+weight4
+        if total_weight > 90:
+            match_level = f'Full Match, {total_weight}'
+        elif 80 <= total_weight <= 90:
+            match_level = f'Partial Match, {total_weight}'
+        else:
+            match_level = 'No Match'
+        df['Address_Match_Level'] = match_level
 
         # matching_levels = get_matching_level(df,data.dob,data.mobile,data.email,full_name_similarity,total_weight)
         # df['Overall_Matching_Level'] = ', '.join(matching_levels)
@@ -210,8 +210,8 @@ def verify_user(data: UserData):
             "address_line_similarity"  : address_line_similarity,
             "suburb_similarity"  : suburb_similarity,
             "state_similarity"  :  state_similarity,
-            "postcde_similarity" : postcde_similarity
-            # "Address_Match_Level": df.Address_Match_Level[0],
+            "postcde_similarity" : postcde_similarity,
+            "Address_Match_Level": df.Address_Match_Level[0]
             # "Overall Matching Level"  : df.Overall_Matching_Level[0],
             # "Overall Verified Level "  : df.Overall_Verified_Level[0]
 
