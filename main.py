@@ -219,7 +219,7 @@ def verify_function(data: UserData):
 @app.post("/verify_user/")
 def verify_user(data: UserData):
     try:        
-        verify_function()
+        verify_function(data)
     except snowflake.connector.errors.ProgrammingError as e:
         raise HTTPException(status_code=500, detail=f"Error executing query: {e}")
 
@@ -230,23 +230,29 @@ def verify_user(data: UserData):
 @app.post("/batch_process_verify_users/")
 async def batch_process_verify_users(file: UploadFile = File(...)):
     try:
-        # Read CSV file as pandas DataFrame
         contents = await file.read()
         df_users = pd.read_csv(io.StringIO(contents.decode("utf-8"))).fillna("")
-
+        
         results = []
-        # cursor = conn.cursor()
-
-        # Loop through each user record in the CSV
+        
         for index, row in df_users.iterrows():
-            df_result = verify_function()
-            if df_result.empty:
-                results.append({"index": index, "result": "No match found"})
-            else: 
-                results.append({"index": index, "result": df_result.to_dict(orient="records")})
+            # Create a UserData object from the row
+            data = UserData(
+                first_name=row['first_name'],
+                middle_name=row['middle_name'],
+                sur_name=row['sur_name'],
+                dob=row['dob'],
+                address_line1= row["address_line1"], 
+                suburb= row["suburb"], 
+                state= row["state"], 
+                postcode= row["postcode"], 
+                mobile= row["mobile"], 
+                email= row["email"]
+            )
+            df_result = verify_user(data)  # Call verify_user with UserData object
+            results.append({"index": index, "result": df_result})
 
         return {"results": results}
-            
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
