@@ -475,12 +475,12 @@ def get_matching_level(df,dob,mobile,email,name_matching_score,address_matching_
     for score_range, level in address_score_levels.items():
         if score_range[0] <= address_matching_weights <= score_range[1]:
             levels.append(f'{level} - {int(address_matching_weights)}'+"%")
-    if 'DOB' in df.columns and pd.notna(df['DOB'].iloc[0]) and str(df['DOB'].iloc[0]) == dob:
+    if 'DOB' in df.columns and pd.notna(df.DOB.iloc[0]) and str(df.DOB.iloc[0]) == dob:
         levels.append('DOB - 100%')
 
-    elif 'PHONE2_MOBILE' in df.columns and pd.notna(df['PHONE2_MOBILE'].iloc[0]) and df['PHONE2_MOBILE'].iloc[0] == mobile:
+    elif 'PHONE2_MOBILE' in df.columns and pd.notna(df.PHONE2_MOBILE.iloc[0]) and df.PHONE2_MOBILE.iloc[0] == mobile:
         levels.append('Mobile - 100%')
-    elif ((df['EMAILADDRESS'][0] in df['EMAILADDRESS'][0] and df['EMAILADDRESS'][0] != "") and df['EMAILADDRESS'][0] == email):
+    elif ((df.EMAILADDRESS[0] in df.EMAILADDRESS[0] and df.EMAILADDRESS[0] != "") and df.EMAILADDRESS[0] == email):
         levels.append('Email - 100%')
 
     return levels
