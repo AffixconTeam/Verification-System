@@ -425,7 +425,7 @@ async def batch_process(file: UploadFile = File(...)):
 
                 }
             
-                results.append({"index": index, "result": df_result.to_dict(orient="records")})
+                results.append({"index": index, "result": df_result})
 
 
         return {"results": results}
