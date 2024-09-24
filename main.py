@@ -119,60 +119,60 @@ def verify_user(data: UserData):
             full_name_similarity = 100
             df['Name_Match_Level'] = 'Transposed Match'
         
-        # df['dob_match'] = df['DOB'].apply(lambda x: Dob(data.dob).exact(x))
-        # address_str = "XXXXXX"
+        df['dob_match'] = df['DOB'].apply(lambda x: Dob(data.dob).exact(x))
+        address_str = "XXXXXX"
 
-        # source = {
-        #     # 'Gnaf_Pid': address_id,
-        #     'Ad1': df["AD1"][0],
-        #     'Suburb': df["SUBURB"][0],
-        #     'State': df["STATE"][0],
-        #     'Postcode': str(df["POSTCODE"][0])
-        # }
-        # source_output = address_parsing(df['AD1'][0])
-        # source = {**source, **source_output}
+        source = {
+            # 'Gnaf_Pid': address_id,
+            'Ad1': df["AD1"][0],
+            'Suburb': df["SUBURB"][0],
+            'State': df["STATE"][0],
+            'Postcode': str(df["POSTCODE"][0])
+        }
+        source_output = address_parsing(df['AD1'][0])
+        source = {**source, **source_output}
         # # st.write(source)
 
 
-        # parsed_address = {
-        #     # 'Gnaf_Pid': address_id,
-        #     'Ad1': data.address_line1,
-        #     'Suburb': data.suburb,
-        #     'State': data.state,
-        #     'Postcode': str(data.postcode)
-        # }
-        # parsed_output = address_parsing(data.address_line1)
-        # parsed_address = {**parsed_address, **parsed_output}
+        parsed_address = {
+            # 'Gnaf_Pid': address_id,
+            'Ad1': data.address_line1,
+            'Suburb': data.suburb,
+            'State': data.state,
+            'Postcode': str(data.postcode)
+        }
+        parsed_output = address_parsing(data.address_line1)
+        parsed_address = {**parsed_address, **parsed_output}
         # # st.write(parsed_address)
 
-        # address_checker = Address(parsed_address=parsed_address,source_address=source)
-        # address_str=address_checker.address_line1_match(address_str)
-        # df['Address Matching String'] = address_str
+        address_checker = Address(parsed_address=parsed_address,source_address=source)
+        address_str=address_checker.address_line1_match(address_str)
+        df['Address_Matching_String'] = address_str
 
-        # df['address_line_similarity'] = df['AD1'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.address_line1.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
-        # weight1 = 40 if 90<=df['address_line_similarity'][0] <=100 else 30 if 85<=df['address_line_similarity'][0] <90 else 0 
+        address_line_similarity = max(textdistance.jaro_winkler(df.AD1,data.address_line1) * 100, 0) if textdistance.jaro_winkler(df.AD1,data.address_line1) * 100 > 65 else 0
+        weight1 = 40 if 90<=address_line_similarity <=100 else 30 if 85<=address_line_similarity <90 else 0 
         
-        # df['suburb_similarity'] = df['SUBURB'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.suburb.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
-        # weight2 = 30 if 90<=df['suburb_similarity'][0] <=100 else 25 if 85<=df['suburb_similarity'][0] <90 else 0 
+        suburb_similarity = max(textdistance.jaro_winkler(df.SUBURB,data.suburb) * 100, 0) if textdistance.jaro_winkler(df.SUBURB,data.suburb) * 100 > 65 else 0
+        weight2 = 30 if 90<=suburb_similarity <=100 else 25 if 85<=suburb_similarity <90 else 0 
         
-        # df['state_similarity'] = df['STATE'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.state.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
-        # weight3 = 10 if 90<=df['state_similarity'][0] <=100 else  0
+        state_similarity = max(textdistance.jaro_winkler(df.STATE,data.state) * 100, 0) if textdistance.jaro_winkler(df.STATE,data.state) * 100 > 65 else 0
+        weight3 = 10 if 90<=state_similarity <=100 else  0
 
-        # df['postcde_similarity'] = df['POSTCODE'].astype(str).apply(lambda x: 100 if x == data.postcode else 0) 
-        # weight4 = 20 if df['postcde_similarity'][0] ==100 else 0 
+        postcde_similarity = max(textdistance.jaro_winkler(df.POSTCODE,data.postcode) * 100, 0)
+        weight4 = 20 if postcde_similarity ==100 else 0 
         
-        # total_weight = weight1+weight2+weight3+weight4
-        # if total_weight > 90:
-        #     match_level = f'Full Match, {total_weight}'
-        # elif 80 <= total_weight <= 90:
-        #     match_level = f'Partial Match, {total_weight}'
-        # else:
-        #     match_level = 'No Match'
-        # df['Address Match Level'] = match_level
+        total_weight = weight1+weight2+weight3+weight4
+        if total_weight > 90:
+            match_level = f'Full Match, {total_weight}'
+        elif 80 <= total_weight <= 90:
+            match_level = f'Partial Match, {total_weight}'
+        else:
+            match_level = 'No Match'
+        df['Address_Match_Level'] = match_level
 
-        # matching_levels = get_matching_level(df,data.dob,data.mobile,data.email,df['full_name_similarity'][0],total_weight)
-        # df['Overall Matching Level'] = ', '.join(matching_levels)
-        # df["Overall Verified Level"] = append_based_on_verification(df,verified_by=True)
+        matching_levels = get_matching_level(df,data.dob,data.mobile,data.email,full_name_similarity,total_weight)
+        df['Overall_Matching_Level'] = ', '.join(matching_levels)
+        df["Overall_Verified_Level"] = append_based_on_verification(df,verified_by=True)
 
         # # st.write("source",source)
         # # st.write("parsed_address",parsed_address)
@@ -204,7 +204,16 @@ def verify_user(data: UserData):
             "middle_name_similarity":middle_name_similarity,          
             "sur_name_similarity":sur_name_similarity,
             "Name Match Level": df.Name_Match_Level[0],
-            "full_name_similarity":  full_name_similarity      
+            "full_name_similarity":  full_name_similarity,
+            "dob_match": df['dob_match'][0],
+            "Address Matching String" : df.Address_Matching_String[0],
+            "address_line_similarity"  : address_line_similarity,
+            "suburb_similarity"  : suburb_similarity,
+            "state_similarity"  :  state_similarity,
+            "postcde_similarity" : postcde_similarity,
+            "Address_Match_Level": df.Address_Match_Level[0],
+            "Overall Matching Level"  : df.Overall_Matching_Level[0],
+            "Overall Verified Level "  : df.Overall_Verified_Level[0]
 
         }
     except snowflake.connector.errors.ProgrammingError as e:
