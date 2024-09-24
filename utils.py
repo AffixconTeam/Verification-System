@@ -487,8 +487,8 @@ def get_matching_level(df,dob,mobile,email,name_matching_score,address_matching_
 
 
 
-def append_based_on_verification(result, verified_by =False):
-    verified_by = result['Overall Matching Level'][0]
+def append_based_on_verification(Overall_Matching_Level, verified_by =False):
+    verified_by = Overall_Matching_Level
     name_terms = ["FullName", "PartialName"]
     address_terms = ["Address", "PartialAddress"]
     dob_term = "DOB"
