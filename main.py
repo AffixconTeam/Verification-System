@@ -228,35 +228,57 @@ def verify_user(data: UserData):
         cursor.close()
 
 
+class UserDataCsv:
+    def __init__(self, first_name, middle_name, sur_name, dob, address_line1, suburb, state, postcode, mobile, email):
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.sur_name = sur_name
+        self.dob = dob
+        self.address_line1 = address_line1
+        self.suburb = suburb
+        self.state = state
+        self.postcode = postcode
+        self.mobile = mobile
+        self.email = email
+
 @app.post("/batch_process_verify_users/")
 async def batch_process_verify_users(file: UploadFile = File(...)):
     try:
         contents = await file.read()
         df_users = pd.read_csv(io.StringIO(contents.decode("utf-8"))).fillna("")
-        
+
         results = []
-        
+
         for index, row in df_users.iterrows():
             # Create a UserData object from the row
-            data = UserData(
+            data = UserDataCsv(
                 first_name=row['first_name'],
                 middle_name=row['middle_name'],
                 sur_name=row['sur_name'],
                 dob=row['dob'],
-                address_line1= row["address_line1"], 
-                suburb= row["suburb"], 
-                state= row["state"], 
-                postcode= row["postcode"], 
-                mobile= row["mobile"], 
-                email= row["email"]
+                address_line1=row['address_line1'],
+                suburb=row['suburb'],
+                state=row['state'],
+                postcode=row['postcode'],
+                mobile=row['mobile'],
+                email=row['email']
             )
-            # df_result = verify_user(data)  # Call verify_user with UserData object
-            results.append({"index": index, "result": df_users})
+
+            # Call a verification function here, assuming it's defined (e.g., `verify_user`)
+            # The function should return a result for each row
+            # df_result = verify_function(data)
+
+            # Append the verification result for each user to the results list
+            if data.empty:
+                results.append({"index": index, "result": "No match found"})
+            else:
+                results.append({"index": index, "result": data.to_dict(orient="records")})
 
         return {"results": results}
-    
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/")
 def read_root():
