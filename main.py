@@ -155,24 +155,24 @@ def verify_user(data: UserData):
         suburb_similarity = max(textdistance.jaro_winkler(df.SUBURB[0],data.suburb[0]) * 100, 0) if textdistance.jaro_winkler(df.SUBURB[0],data.suburb[0]) * 100 > 65 else 0
         weight2 = 30 if 90<=suburb_similarity <=100 else 25 if 85<=suburb_similarity <90 else 0 
         
-        # state_similarity = max(textdistance.jaro_winkler(df.STATE,data.state) * 100, 0) if textdistance.jaro_winkler(df.STATE,data.state) * 100 > 65 else 0
-        # weight3 = 10 if 90<=state_similarity <=100 else  0
+        state_similarity = max(textdistance.jaro_winkler(df.STATE[0],data.state[0]) * 100, 0) if textdistance.jaro_winkler(df.STATE[0],data.state[0]) * 100 > 65 else 0
+        weight3 = 10 if 90<=state_similarity <=100 else  0
 
-        # postcde_similarity = max(textdistance.jaro_winkler(df.POSTCODE,data.postcode) * 100, 0)
-        # weight4 = 20 if postcde_similarity ==100 else 0 
+        postcde_similarity = max(textdistance.jaro_winkler(df.POSTCODE[0],data.postcode[0]) * 100, 0)
+        weight4 = 20 if postcde_similarity ==100 else 0 
         
-        # total_weight = weight1+weight2+weight3+weight4
-        # if total_weight > 90:
-        #     match_level = f'Full Match, {total_weight}'
-        # elif 80 <= total_weight <= 90:
-        #     match_level = f'Partial Match, {total_weight}'
-        # else:
-        #     match_level = 'No Match'
-        # df['Address_Match_Level'] = match_level
+        total_weight = weight1+weight2+weight3+weight4
+        if total_weight > 90:
+            match_level = f'Full Match, {total_weight}'
+        elif 80 <= total_weight <= 90:
+            match_level = f'Partial Match, {total_weight}'
+        else:
+            match_level = 'No Match'
+        df['Address_Match_Level'] = match_level
 
-        # matching_levels = get_matching_level(df,data.dob,data.mobile,data.email,full_name_similarity,total_weight)
-        # df['Overall_Matching_Level'] = ', '.join(matching_levels)
-        # df["Overall_Verified_Level"] = append_based_on_verification(df,verified_by=True)
+        matching_levels = get_matching_level(df,data.dob,data.mobile,data.email,full_name_similarity,total_weight)
+        df['Overall_Matching_Level'] = ', '.join(matching_levels)
+        df["Overall_Verified_Level"] = append_based_on_verification(df,verified_by=True)
 
         # # st.write("source",source)
         # # st.write("parsed_address",parsed_address)
@@ -207,13 +207,13 @@ def verify_user(data: UserData):
             "full_name_similarity":  full_name_similarity,
             "dob_match": df['dob_match'][0],
             "Address Matching String" : df.Address_Matching_String[0],
-            "address_line_similarity"  : address_line_similarity
-            # "suburb_similarity"  : suburb_similarity,
-            # "state_similarity"  :  state_similarity,
-            # "postcde_similarity" : postcde_similarity,
-            # "Address_Match_Level": df.Address_Match_Level[0],
-            # "Overall Matching Level"  : df.Overall_Matching_Level[0],
-            # "Overall Verified Level "  : df.Overall_Verified_Level[0]
+            "address_line_similarity"  : address_line_similarity,
+            "suburb_similarity"  : suburb_similarity,
+            "state_similarity"  :  state_similarity,
+            "postcde_similarity" : postcde_similarity,
+            "Address_Match_Level": df.Address_Match_Level[0],
+            "Overall Matching Level"  : df.Overall_Matching_Level[0],
+            "Overall Verified Level "  : df.Overall_Verified_Level[0]
 
         }
     except snowflake.connector.errors.ProgrammingError as e:
