@@ -228,54 +228,50 @@ def verify_user(data: UserData):
         cursor.close()
 
 
-class UserDataCsv:
-    def __init__(self, first_name, middle_name, sur_name, dob, address_line1, suburb, state, postcode, mobile, email):
-        self.first_name = first_name
-        self.middle_name = middle_name
-        self.sur_name = sur_name
-        self.dob = dob
-        self.address_line1 = address_line1
-        self.suburb = suburb
-        self.state = state
-        self.postcode = postcode
-        self.mobile = mobile
-        self.email = email
-
-@app.post("/batch_process_verify_users/")
-async def batch_process_verify_users(file: UploadFile = File(...)):
+@app.post("/batch_process/")
+async def batch_process(file: UploadFile = File(...)):
     try:
+        # Read CSV file as pandas DataFrame
         contents = await file.read()
         df_users = pd.read_csv(io.StringIO(contents.decode("utf-8"))).fillna("")
 
         results = []
+        cursor = conn.cursor()
 
+        # Loop through each user record in the CSV
         for index, row in df_users.iterrows():
-            # Create a UserData object from the row
-            data = UserDataCsv(
-                first_name=row['first_name'],
-                middle_name=row['middle_name'],
-                sur_name=row['sur_name'],
-                dob=row['dob'],
-                address_line1=row['address_line1'],
-                suburb=row['suburb'],
-                state=row['state'],
-                postcode=row['postcode'],
-                mobile=row['mobile'],
-                email=row['email']
-            )
+            query = f"""
+                WITH InputData AS (
+                    SELECT
+                        '{row['first_name']}' AS first_name_input,
+                        '{row['middle_name']}' AS middle_name_input,
+                        '{row['sur_name']}' AS sur_name_input,
+                        '{row['dob']}' AS dob_input
+                )
+                SELECT
+                    First_name, middle_name, sur_name, dob, ad1, suburb, state, postcode, PHONE2_MOBILE, EMAILADDRESS
+                FROM
+                    DATA_VERIFICATION.PUBLIC.AU_RESIDENTIAL AS resident,
+                    InputData AS input
+                WHERE
+                    (
+                        (LOWER(input.sur_name_input) IS NOT NULL AND LOWER(input.sur_name_input) != '' AND LOWER(resident.sur_name) LIKE LOWER(input.sur_name_input))
+                        OR (LOWER(input.middle_name_input) IS NOT NULL AND LOWER(input.middle_name_input) != '' AND LOWER(resident.middle_name) = LOWER(input.middle_name_input))
+                        OR (LOWER(input.first_name_input) IS NOT NULL AND LOWER(input.first_name_input) != '' AND LOWER(resident.first_name) = LOWER(input.first_name_input))
+                        AND (input.dob_input IS NOT NULL AND input.dob_input != '' AND resident.DOB = input.dob_input)
+                    )
+                LIMIT 1
+            """
+            cursor.execute(query)
+            df_result = cursor.fetch_pandas_all()
 
-            # Call a verification function here, assuming it's defined (e.g., `verify_user`)
-            # The function should return a result for each row
-            # df_result = verify_function(data)
-
-            # Append the verification result for each user to the results list
-            if data.empty:
+            if df_result.empty:
                 results.append({"index": index, "result": "No match found"})
             else:
-                results.append({"index": index, "result": data.to_dict(orient="records")})
+                results.append({"index": index, "result": df_result.to_dict(orient="records")})
 
         return {"results": results}
-
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
