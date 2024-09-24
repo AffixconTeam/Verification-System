@@ -171,7 +171,7 @@ def verify_user(data: UserData):
         df['Address_Match_Level'] = match_level
 
         matching_levels = get_matching_level(df,data.dob,data.mobile,data.email,full_name_similarity,total_weight)
-        # df['Overall_Matching_Level'] = ', '.join(matching_levels)
+        Overall_Matching_Level = ', '.join(matching_levels)
         # df["Overall_Verified_Level"] = append_based_on_verification(df,verified_by=True)
 
         # # st.write("source",source)
@@ -212,8 +212,7 @@ def verify_user(data: UserData):
             "state_similarity"  :  state_similarity,
             "postcde_similarity" : postcde_similarity,
             "Address_Match_Level": df.Address_Match_Level[0],
-            'matching_levels' : matching_levels
-            # "Overall Matching Level"  : df.Overall_Matching_Level[0],
+            "Overall Matching Level"  : Overall_Matching_Level
             # "Overall Verified Level "  : df.Overall_Verified_Level[0]
 
         }
