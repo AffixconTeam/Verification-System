@@ -149,16 +149,16 @@ def verify_user(data: UserData):
         address_str=address_checker.address_line1_match(address_str)
         df['Address_Matching_String'] = address_str
 
-        address_line_similarity = max(textdistance.jaro_winkler(df.AD1[0].lower(),data.address_line1[0].lower()) * 100, 0) if textdistance.jaro_winkler(df.AD1[0].lower(),data.address_line1[0].lower()) * 100 > 65 else 0
+        address_line_similarity = max(textdistance.jaro_winkler(df.AD1[0].lower(),data.address_line1.lower()) * 100, 0) if textdistance.jaro_winkler(df.AD1[0].lower(),data.address_line1[0].lower()) * 100 > 65 else 0
         weight1 = 40 if 90<=address_line_similarity <=100 else 30 if 85<=address_line_similarity <90 else 0 
         
-        suburb_similarity = max(textdistance.jaro_winkler(df.SUBURB[0].lower(),data.suburb[0].lower()) * 100, 0) if textdistance.jaro_winkler(df.SUBURB[0].lower(),data.suburb[0].lower()) * 100 > 65 else 0
+        suburb_similarity = max(textdistance.jaro_winkler(df.SUBURB[0].lower(),data.suburb.lower()) * 100, 0) if textdistance.jaro_winkler(df.SUBURB[0].lower(),data.suburb[0].lower()) * 100 > 65 else 0
         weight2 = 30 if 90<=suburb_similarity <=100 else 25 if 85<=suburb_similarity <90 else 0 
         
-        state_similarity = max(textdistance.jaro_winkler(df.STATE[0].lower(),data.state[0].lower()) * 100, 0) if textdistance.jaro_winkler(df.STATE[0].lower(),data.state[0].lower()) * 100 > 65 else 0
+        state_similarity = max(textdistance.jaro_winkler(df.STATE[0].lower(),data.state.lower()) * 100, 0) if textdistance.jaro_winkler(df.STATE[0].lower(),data.state[0].lower()) * 100 > 65 else 0
         weight3 = 10 if 90<=state_similarity <=100 else  0
 
-        postcde_similarity = max(textdistance.jaro_winkler(str(df.POSTCODE[0]),str(data.postcode[0])) * 100, 0)  if textdistance.jaro_winkler(str(df.POSTCODE[0]),str(data.postcode[0])) * 100 == 100 else 0
+        postcde_similarity = max(textdistance.jaro_winkler(str(df.POSTCODE[0]),str(data.postcode)) * 100, 0)  if textdistance.jaro_winkler(str(df.POSTCODE[0]),str(data.postcode[0])) * 100 == 100 else 0
         weight4 = 20 if postcde_similarity ==100 else 0 
         
         # total_weight = weight1+weight2+weight3+weight4
@@ -210,10 +210,7 @@ def verify_user(data: UserData):
             "address_line_similarity"  : address_line_similarity,
             "suburb_similarity"  : suburb_similarity,
             "state_similarity"  :  state_similarity,
-            "postcde_similarity" : postcde_similarity,
-            "test1": df.AD1[0].lower(),
-            "test2": data.address_line1[0].lower(),
-            "test_score" : textdistance.jaro_winkler(df.AD1[0].lower(),data.address_line1[0].lower()) * 100
+            "postcde_similarity" : postcde_similarity
             # "Address_Match_Level": df.Address_Match_Level[0],
             # "Overall Matching Level"  : df.Overall_Matching_Level[0],
             # "Overall Verified Level "  : df.Overall_Verified_Level[0]
