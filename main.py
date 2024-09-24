@@ -3,10 +3,11 @@ import pandas as pd
 from template import conn
 from utils import *
 import snowflake.connector
-from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import uvicorn
 from fuzzywuzzy import fuzz
+from fastapi import FastAPI, HTTPException, UploadFile, File
+import io
 
 
 app = FastAPI()
@@ -221,6 +222,54 @@ def verify_user(data: UserData):
 
     finally:
         cursor.close()
+
+
+@app.post("/batch_process_verify_users/")
+async def batch_process_verify_users(file: UploadFile = File(...)):
+    try:
+        # Read CSV file as pandas DataFrame
+        contents = await file.read()
+        df_users = pd.read_csv(io.StringIO(contents.decode("utf-8")))
+
+        results = []
+        cursor = conn.cursor()
+
+        # Loop through each user record in the CSV
+        for index, row in df_users.iterrows():
+            query = f"""
+                WITH InputData AS (
+                    SELECT
+                        '{row['first_name']}' AS first_name_input,
+                        '{row['middle_name']}' AS middle_name_input,
+                        '{row['sur_name']}' AS sur_name_input,
+                        '{row['dob']}' AS dob_input
+                )
+                SELECT
+                    First_name, middle_name, sur_name, dob, ad1, suburb, state, postcode, PHONE2_MOBILE, EMAILADDRESS
+                FROM
+                    DATA_VERIFICATION.PUBLIC.AU_RESIDENTIAL AS resident,
+                    InputData AS input
+                WHERE
+                    (
+                        (LOWER(input.sur_name_input) IS NOT NULL AND LOWER(input.sur_name_input) != '' AND LOWER(resident.sur_name) LIKE LOWER(input.sur_name_input))
+                        OR (LOWER(input.middle_name_input) IS NOT NULL AND LOWER(input.middle_name_input) != '' AND LOWER(resident.middle_name) = LOWER(input.middle_name_input))
+                        OR (LOWER(input.first_name_input) IS NOT NULL AND LOWER(input.first_name_input) != '' AND LOWER(resident.first_name) = LOWER(input.first_name_input))
+                        AND (input.dob_input IS NOT NULL AND input.dob_input != '' AND resident.DOB = input.dob_input)
+                    )
+                LIMIT 1
+            """
+            cursor.execute(query)
+            df_result = cursor.fetch_pandas_all()
+
+            if df_result.empty:
+                results.append({"index": index, "result": "No match found"})
+            else:
+                results.append({"index": index, "result": df_result.to_dict(orient="records")})
+
+        return {"results": results}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 def read_root():
