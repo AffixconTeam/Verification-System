@@ -120,34 +120,34 @@ def verify_user(data: UserData):
             df['Name_Match_Level'] = 'Transposed Match'
         
         df['dob_match'] = df['DOB'].apply(lambda x: Dob(data.dob).exact(x))
-        # address_str = "XXXXXX"
+        address_str = "XXXXXX"
 
-        # source = {
-        #     # 'Gnaf_Pid': address_id,
-        #     'Ad1': df["AD1"][0],
-        #     'Suburb': df["SUBURB"][0],
-        #     'State': df["STATE"][0],
-        #     'Postcode': str(df["POSTCODE"][0])
-        # }
-        # source_output = address_parsing(df['AD1'][0])
-        # source = {**source, **source_output}
+        source = {
+            # 'Gnaf_Pid': address_id,
+            'Ad1': df["AD1"][0],
+            'Suburb': df["SUBURB"][0],
+            'State': df["STATE"][0],
+            'Postcode': str(df["POSTCODE"][0])
+        }
+        source_output = address_parsing(df['AD1'][0])
+        source = {**source, **source_output}
         # # # st.write(source)
 
 
-        # parsed_address = {
-        #     # 'Gnaf_Pid': address_id,
-        #     'Ad1': data.address_line1,
-        #     'Suburb': data.suburb,
-        #     'State': data.state,
-        #     'Postcode': str(data.postcode)
-        # }
-        # parsed_output = address_parsing(data.address_line1)
-        # parsed_address = {**parsed_address, **parsed_output}
+        parsed_address = {
+            # 'Gnaf_Pid': address_id,
+            'Ad1': data.address_line1,
+            'Suburb': data.suburb,
+            'State': data.state,
+            'Postcode': str(data.postcode)
+        }
+        parsed_output = address_parsing(data.address_line1)
+        parsed_address = {**parsed_address, **parsed_output}
         # # # st.write(parsed_address)
 
-        # address_checker = Address(parsed_address=parsed_address,source_address=source)
-        # address_str=address_checker.address_line1_match(address_str)
-        # df['Address_Matching_String'] = address_str
+        address_checker = Address(parsed_address=parsed_address,source_address=source)
+        address_str=address_checker.address_line1_match(address_str)
+        df['Address_Matching_String'] = address_str
 
         # address_line_similarity = max(textdistance.jaro_winkler(df.AD1,data.address_line1) * 100, 0) if textdistance.jaro_winkler(df.AD1,data.address_line1) * 100 > 65 else 0
         # weight1 = 40 if 90<=address_line_similarity <=100 else 30 if 85<=address_line_similarity <90 else 0 
@@ -205,8 +205,8 @@ def verify_user(data: UserData):
             "sur_name_similarity":sur_name_similarity,
             "Name Match Level": df.Name_Match_Level[0],
             "full_name_similarity":  full_name_similarity,
-            "dob_match": df['dob_match'][0]
-            # "Address Matching String" : df.Address_Matching_String[0],
+            "dob_match": df['dob_match'][0],
+            "Address Matching String" : df.Address_Matching_String[0]
             # "address_line_similarity"  : address_line_similarity,
             # "suburb_similarity"  : suburb_similarity,
             # "state_similarity"  :  state_similarity,
