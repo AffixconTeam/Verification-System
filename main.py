@@ -80,46 +80,44 @@ def verify_user(data: UserData):
         middle_name_similarity = max(textdistance.jaro_winkler(df.MIDDLE_NAME[0].lower(), data.middle_name.lower()) * 100, 0) if textdistance.jaro_winkler(df.MIDDLE_NAME[0].lower(), data.middle_name.lower()) * 100 > 65 else 0
         sur_name_similarity = max(textdistance.jaro_winkler(df.SUR_NAME[0].lower(), data.sur_name.lower()) * 100, 0) if textdistance.jaro_winkler(df.SUR_NAME[0].lower(), data.sur_name.lower()) * 100 > 65 else 0
 
-        # first_name_similarity = (textdistance.jaro_winkler(df.FIRST_NAME[0].lower(), data.first_name.lower()) * 100).apply(lambda score: int(score) if score > 65 else 0) 
-        # middle_name_similarity = df['MIDDLE_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.middle_name.lower())*100).apply(lambda score: int(score) if score > 65 else 0) 
-        # sur_name_similarity = df['SUR_NAME'].apply(lambda x: textdistance.jaro_winkler(x.lower(), data.sur_name.lower())*100).apply(lambda score: score if int(score) > 65 else 0) 
+        if df['name_match_str'][0][0] == 'T':
+            first_name_similarity = 100
+        if df['name_match_str'][0][1] == 'T':
+            middle_name_similarity = 100
+        if df['name_match_str'][0][2] == 'T':
+           sur_name_similarity = 100
 
-        # if df['name_match_str'][0][0] == 'T':
-        #     df['first_name_similarity'] = 100
-        # if df['name_match_str'][0][1] == 'T':
-        #     df['middle_name_similarity'] = 100
-        # if df['name_match_str'][0][2] == 'T':
-        #     df['sur_name_similarity'] = 100
-
-        # full_name_request = (data.first_name.strip() + " " + data.middle_name.strip() + " "+ data.sur_name.strip()).strip().lower()
-        # full_name_matched = (df['FIRST_NAME'][0].strip()+ " "+df['MIDDLE_NAME'][0].strip()+ " "+df['SUR_NAME'][0].strip()).lower()
-        # name_obj = Name(full_name_request)
+        full_name_request = (data.first_name.strip() + " " + data.middle_name.strip() + " "+ data.sur_name.strip()).strip().lower()
+        full_name_matched = (df.FIRST_NAME[0].strip()+ " "+df.MIDDLE_NAME[0].strip()+ " "+df.SUR_NAME[0].strip()).lower()
+        name_obj = Name(full_name_request)
         
         # # Apply the different matching methods from the Name class
-        # match_results = {
-        #     "Exact Match": (df['name_match_str'] == 'EEE').any(),
-        #     "Hyphenated Match": name_obj.hyphenated(full_name_matched),
-        #     "Transposed Match": name_obj.transposed(full_name_matched),
-        #     "Middle Name Mismatch": df['name_match_str'].str.contains('E.*E$', regex=True).any(),
-        #     "Initial Match": name_obj.initial(full_name_matched),
-        #     "SurName only Match": df['name_match_str'].str.contains('^[ETMD].*E$', regex=True).any(),
-        #     "Fuzzy Match": name_obj.fuzzy(full_name_matched),
-        #     "Nickname Match": name_obj.nickname(full_name_matched),
-        #     "Missing Part Match": name_obj.missing(full_name_matched),
-        #     "Different Name": name_obj.different(full_name_matched)
-        # }
+        match_results = {
+            "Exact Match": (df['name_match_str'] == 'EEE').any(),
+            "Hyphenated Match": name_obj.hyphenated(full_name_matched),
+            "Transposed Match": name_obj.transposed(full_name_matched),
+            "Middle Name Mismatch": df['name_match_str'].str.contains('E.*E$', regex=True).any(),
+            "Initial Match": name_obj.initial(full_name_matched),
+            "SurName only Match": df['name_match_str'].str.contains('^[ETMD].*E$', regex=True).any(),
+            "Fuzzy Match": name_obj.fuzzy(full_name_matched),
+            "Nickname Match": name_obj.nickname(full_name_matched),
+            "Missing Part Match": name_obj.missing(full_name_matched),
+            "Different Name": name_obj.different(full_name_matched)
+        }
         
         # # Filter out any matches that returned False
-        # match_results = {k: v for k, v in match_results.items() if v}
-        # top_match = next(iter(match_results.items()), ("No Match Found", ""))
+        match_results = {k: v for k, v in match_results.items() if v}
+        top_match = next(iter(match_results.items()), ("No Match Found", ""))
 
-        # df['Name Match Level'] = top_match[0]
+        df['Name_Match_Level'] = top_match[0]
         
-        # df['full_name_similarity'] = (textdistance.jaro_winkler(full_name_request,full_name_matched)*100) 
+        full_name_similarity = max(textdistance.jaro_winkler(full_name_request,full_name_matched) * 100, 0) if textdistance.jaro_winkler(full_name_request,full_name_matched) * 100 > 65 else 0
+
+        # full_name_similarity = (textdistance.jaro_winkler(full_name_request,full_name_matched)*100) 
         # df['full_name_similarity'] = df['full_name_similarity'].apply(lambda score: int(score) if score > 65 else 0)
-        # if fuzz.token_sort_ratio(full_name_request,full_name_matched)==100 and top_match[0] !='Exact Match':
-        #     df['full_name_similarity'] = 100
-        #     df['Match Level'] = 'Transposed Match'
+        if fuzz.token_sort_ratio(full_name_request,full_name_matched)==100 and top_match[0] !='Exact Match':
+            full_name_similarity = 100
+            df['Name_Match_Level'] = 'Transposed Match'
         
         # df['dob_match'] = df['DOB'].apply(lambda x: Dob(data.dob).exact(x))
         # address_str = "XXXXXX"
@@ -191,20 +189,22 @@ def verify_user(data: UserData):
         # }
     
         return {
-            'FIRST_NAME':df.FIRST_NAME[0],             ##ok
-            'MIDDLE_NAME':df.MIDDLE_NAME[0],             ##ok
-            'SUR_NAME':df.SUR_NAME[0],           ##ok
+            'FIRST_NAME':df.FIRST_NAME[0],            
+            'MIDDLE_NAME':df.MIDDLE_NAME[0],             
+            'SUR_NAME':df.SUR_NAME[0],          
             'DOB':str(df.DOB[0]),
-            'AD1':df.AD1[0],           ##ok
+            'AD1':df.AD1[0],           
             "SUBURB":df.SUBURB[0],
             'STATE':df.STATE[0],
             'POSTCODE':str(df.POSTCODE[0]),
             'PHONE2_MOBILE':str(df.PHONE2_MOBILE[0]),
             'EMAILADDRESS':df.EMAILADDRESS[0],
-            "name_match_str":df.name_match_str[0],           ##ok
-            "first_name_similarity":first_name_similarity,           ##ok
-            "middle_name_similarity":middle_name_similarity,           ##ok
-            "sur_name_similarity":sur_name_similarity           ##ok
+            "name_match_str":df.name_match_str[0],          
+            "first_name_similarity":first_name_similarity,           
+            "middle_name_similarity":middle_name_similarity,          
+            "sur_name_similarity":sur_name_similarity,
+            "Name Match Level": df.Name_Match_Level[0],
+            "full_name_similarity":  full_name_similarity      
 
         }
     except snowflake.connector.errors.ProgrammingError as e:
