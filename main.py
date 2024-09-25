@@ -234,7 +234,7 @@ async def batch_process(file: UploadFile = File(...)):
         # Read CSV file as pandas DataFrame
         contents = await file.read()
         df_users = pd.read_csv(io.StringIO(contents.decode("utf-8"))).fillna("")
-        df_users['dob'] = pd.to_datetime(df_users['dob'], format='%m/%d/%Y', errors='coerce')
+        df_users['dob'] = pd.to_datetime(df_users['dob'])
         df_users['dob'] = df_users['dob'].dt.strftime('%Y-%m-%d').fillna("")
 
         results = []
