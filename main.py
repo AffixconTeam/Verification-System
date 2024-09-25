@@ -234,6 +234,8 @@ async def batch_process(file: UploadFile = File(...)):
         # Read CSV file as pandas DataFrame
         contents = await file.read()
         df_users = pd.read_csv(io.StringIO(contents.decode("utf-8"))).fillna("")
+        df_users['dob'] = pd.to_datetime(df_users['dob'], format='%m/%d/%Y', errors='coerce')
+        df_users['dob'] = df_users['dob'].dt.strftime('%Y-%m-%d').fillna("")
 
         results = []
         cursor = conn.cursor()
@@ -328,12 +330,14 @@ async def batch_process(file: UploadFile = File(...)):
                     full_name_similarity = 100
                     df['Name_Match_Level'] = 'Transposed Match'
                 
-                # df['dob_match'] = df['DOB'].apply(lambda x: Dob(row['dob']).exact(x))
+                # df['dob_match'] = df['DOB'].apply(lambda x: Dob(str(row['dob'])).exact(x))
                 # datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")
                 # df['dob_match'] = Dob(str(row['dob'])).exact(str(df.DOB)[0])
                 # df['dob_match'] = Dob(datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")).exact(str(df.DOB)[0])
                 # df['dob_match'] = df.apply(lambda row: Dob(datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")).exact(str(df.DOB)[0]), axis=1)
-                df['dob_match'] = df.apply(compare_dob, axis=1,df=df)
+                # df['dob_match'] = df.apply(lambda row: Dob(str(row['dob']).exact(str(df.DOB))), axis=1)
+                
+                # df['dob_match'] = df.apply(compare_dob, axis=1,df=df)
 
                 address_str = "XXXXXX"
 
@@ -419,7 +423,8 @@ async def batch_process(file: UploadFile = File(...)):
                     "sur_name_similarity":"{}%".format(int(sur_name_similarity)),
                     "Name Match Level": df.Name_Match_Level[0],
                     "full_name_similarity":  "{}%".format(int(full_name_similarity)),
-                    "dob_match": df['dob_match'][0],
+                    # "dob_match": df['dob_match'][0],
+                    'test_dob': str(row['dob']),
                     "Address Matching String" : df.Address_Matching_String[0],
                     "address_line_similarity"  : "{}%".format(int(address_line_similarity)),
                     "suburb_similarity"  : "{}%".format(int(suburb_similarity)),
