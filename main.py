@@ -328,7 +328,8 @@ async def batch_process(file: UploadFile = File(...)):
                     full_name_similarity = 100
                     df['Name_Match_Level'] = 'Transposed Match'
                 
-                df['dob_match'] = df['DOB'].apply(lambda x: Dob(row['dob']).exact(x))
+                # df['dob_match'] = df['DOB'].apply(lambda x: Dob(row['dob']).exact(x))
+                df['dob_match'] = Dob(row['dob']).exact(df['DOB'][0])
                 address_str = "XXXXXX"
 
                 source = {
@@ -405,6 +406,7 @@ async def batch_process(file: UploadFile = File(...)):
                     "SUBURB":df.SUBURB[0],
                     'STATE':df.STATE[0],
                     'POSTCODE':str(df.POSTCODE[0]),
+                    'total_weight':total_weight,
                     'PHONE2_MOBILE':str(df.PHONE2_MOBILE[0]),
                     'EMAILADDRESS':df.EMAILADDRESS[0],
                     "name_match_str":df.name_match_str[0],          
