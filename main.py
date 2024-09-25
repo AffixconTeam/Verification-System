@@ -410,7 +410,7 @@ async def batch_process(file: UploadFile = File(...)):
                     'FIRST_NAME':df.FIRST_NAME[0],            
                     'MIDDLE_NAME':df.MIDDLE_NAME[0],             
                     'SUR_NAME':df.SUR_NAME[0],          
-                    'DOB':str(df.DOB),
+                    'DOB':str(df.DOB)[0],
                     'AD1':df.AD1[0],           
                     "SUBURB":df.SUBURB[0],
                     'STATE':df.STATE[0],
