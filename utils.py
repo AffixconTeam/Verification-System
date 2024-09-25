@@ -2,6 +2,7 @@ import textdistance
 import re
 import streamlit as st
 import pandas as pd
+from datetime import datetime
 
 #-----------------------------------------Name Components -------------------------------------------------------------=
 name_match_actions = {
@@ -543,3 +544,14 @@ def batch_process(df):
             st.error(f"Error processing file: {e}")
     
     return all_records
+
+
+def compare_dob(row):
+    try:
+        # Parse 'dob' column value
+        dob_formatted = datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")
+        # Compare with the static date '1975-01-05'
+        return Dob(dob_formatted).exact('1985-05-21')
+    except (ValueError, TypeError):
+        # Handle cases where 'dob' is invalid or not formatted properly
+        return 'Invalid Date'

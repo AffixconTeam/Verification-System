@@ -333,6 +333,7 @@ async def batch_process(file: UploadFile = File(...)):
                 # df['dob_match'] = Dob(str(row['dob'])).exact(str(df.DOB)[0])
                 # df['dob_match'] = Dob(datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")).exact(str(df.DOB)[0])
                 # df['dob_match'] = df.apply(lambda row: Dob(datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")).exact(str(df.DOB)[0]), axis=1)
+                df['dob_match'] = df.apply(compare_dob, axis=1)
 
                 address_str = "XXXXXX"
 
@@ -409,8 +410,6 @@ async def batch_process(file: UploadFile = File(...)):
                     'AD1':df.AD1[0],           
                     "SUBURB":df.SUBURB[0],
                     'STATE':df.STATE[0],
-                    "row_dob":str(row['dob']),
-                    "df_row":datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d"),
                     'POSTCODE':str(df.POSTCODE[0]),
                     'PHONE2_MOBILE':str(df.PHONE2_MOBILE[0]),
                     'EMAILADDRESS':df.EMAILADDRESS[0],
@@ -420,7 +419,7 @@ async def batch_process(file: UploadFile = File(...)):
                     "sur_name_similarity":"{}%".format(int(sur_name_similarity)),
                     "Name Match Level": df.Name_Match_Level[0],
                     "full_name_similarity":  "{}%".format(int(full_name_similarity)),
-                    # "dob_match": df['dob_match'][0],
+                    "dob_match": df['dob_match'][0],
                     "Address Matching String" : df.Address_Matching_String[0],
                     "address_line_similarity"  : "{}%".format(int(address_line_similarity)),
                     "suburb_similarity"  : "{}%".format(int(suburb_similarity)),
