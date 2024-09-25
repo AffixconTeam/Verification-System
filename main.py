@@ -331,7 +331,8 @@ async def batch_process(file: UploadFile = File(...)):
                 # df['dob_match'] = df['DOB'].apply(lambda x: Dob(row['dob']).exact(x))
                 # datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")
                 # df['dob_match'] = Dob(str(row['dob'])).exact(str(df.DOB)[0])
-                df['dob_match'] = Dob(datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")).exact(str(df.DOB)[0])
+                # df['dob_match'] = Dob(datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")).exact(str(df.DOB)[0])
+                df['dob_match'] = df.apply(lambda row: Dob(datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")).exact(str(df.DOB)[0]), axis=1)
 
                 address_str = "XXXXXX"
 
