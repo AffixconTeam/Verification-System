@@ -8,7 +8,7 @@ import uvicorn
 from fuzzywuzzy import fuzz
 from fastapi import FastAPI, HTTPException, UploadFile, File
 import io
-
+from datetime import datetime
 
 app = FastAPI()
 
@@ -329,7 +329,10 @@ async def batch_process(file: UploadFile = File(...)):
                     df['Name_Match_Level'] = 'Transposed Match'
                 
                 # df['dob_match'] = df['DOB'].apply(lambda x: Dob(row['dob']).exact(x))
-                df['dob_match'] = Dob(str(row['dob'])).exact(str(df['DOB'])[0])
+                # datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")
+                # df['dob_match'] = Dob(str(row['dob'])).exact(str(df.DOB)[0])
+                df['dob_match'] = Dob(datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")).exact(str(df.DOB)[0])
+
                 address_str = "XXXXXX"
 
                 source = {
@@ -401,12 +404,12 @@ async def batch_process(file: UploadFile = File(...)):
                     'FIRST_NAME':df.FIRST_NAME[0],            
                     'MIDDLE_NAME':df.MIDDLE_NAME[0],             
                     'SUR_NAME':df.SUR_NAME[0],          
-                    'DOB':str(df.DOB[0]),
+                    'DOB':str(df.DOB),
                     'AD1':df.AD1[0],           
                     "SUBURB":df.SUBURB[0],
                     'STATE':df.STATE[0],
                     "row_dob":str(row['dob']),
-                    "df_row":str(df['DOB'])[0],
+                    "df_row":datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d"),
                     'POSTCODE':str(df.POSTCODE[0]),
                     'PHONE2_MOBILE':str(df.PHONE2_MOBILE[0]),
                     'EMAILADDRESS':df.EMAILADDRESS[0],
