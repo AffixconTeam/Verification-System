@@ -329,7 +329,7 @@ async def batch_process(file: UploadFile = File(...)):
                     df['Name_Match_Level'] = 'Transposed Match'
                 
                 # df['dob_match'] = df['DOB'].apply(lambda x: Dob(row['dob']).exact(x))
-                df['dob_match'] = Dob(row['dob']).exact(df['DOB'][0])
+                df['dob_match'] = Dob(str(row['dob'])).exact(str(df['DOB'])[0])
                 address_str = "XXXXXX"
 
                 source = {
@@ -405,8 +405,9 @@ async def batch_process(file: UploadFile = File(...)):
                     'AD1':df.AD1[0],           
                     "SUBURB":df.SUBURB[0],
                     'STATE':df.STATE[0],
+                    "row_dob":str(row['dob']),
+                    "df_row":str(df['DOB'])[0],
                     'POSTCODE':str(df.POSTCODE[0]),
-                    'total_weight':total_weight,
                     'PHONE2_MOBILE':str(df.PHONE2_MOBILE[0]),
                     'EMAILADDRESS':df.EMAILADDRESS[0],
                     "name_match_str":df.name_match_str[0],          
