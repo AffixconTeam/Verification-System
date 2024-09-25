@@ -546,12 +546,12 @@ def batch_process(df):
     return all_records
 
 
-def compare_dob(row):
+def compare_dob(row,df):
     try:
         # Parse 'dob' column value
         dob_formatted = datetime.strptime(str(row['dob']), "%m/%d/%Y").strftime("%Y-%m-%d")
         # Compare with the static date '1975-01-05'
-        return Dob(dob_formatted).exact('1985-05-21')
+        return Dob(dob_formatted).exact(str(df.DOB))
     except (ValueError, TypeError):
         # Handle cases where 'dob' is invalid or not formatted properly
         return 'Invalid Date'
