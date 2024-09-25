@@ -420,7 +420,7 @@ async def batch_process(file: UploadFile = File(...)):
                     "sur_name_similarity":"{}%".format(int(sur_name_similarity)),
                     "Name Match Level": df.Name_Match_Level[0],
                     "full_name_similarity":  "{}%".format(int(full_name_similarity)),
-                    "dob_match": df['dob_match'][0],
+                    # "dob_match": df['dob_match'][0],
                     "Address Matching String" : df.Address_Matching_String[0],
                     "address_line_similarity"  : "{}%".format(int(address_line_similarity)),
                     "suburb_similarity"  : "{}%".format(int(suburb_similarity)),
