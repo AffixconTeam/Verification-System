@@ -14,7 +14,7 @@ app = FastAPI()
 
 
 class UserData(BaseModel):
-    country_prefix: str
+    # country_prefix: str
     first_name: str
     middle_name: str
     sur_name: str
@@ -33,10 +33,10 @@ class UserData(BaseModel):
 def verify_user(data: UserData):
     
     # data = UserData(**data)
-    if data["country_prefix"] == 'au':
-        table = "AU_RESIDENTIAL"
-    elif data["country_prefix"] == 'nz':
-        table = "NZ_RESIDENTIAL"
+    # if data["country_prefix"] == 'au':
+    #     table = "AU_RESIDENTIAL"
+    # elif data["country_prefix"] == 'nz':
+    #     table = "NZ_RESIDENTIAL"
 
     # try:
     cursor = conn.cursor()
@@ -51,7 +51,7 @@ def verify_user(data: UserData):
         SELECT
             First_name, middle_name, sur_name, dob, ad1, suburb, state, postcode, PHONE2_MOBILE, EMAILADDRESS
         FROM
-            DATA_VERIFICATION.PUBLIC.{table} AS resident,
+            DATA_VERIFICATION.PUBLIC.AU_RESIDENTIAL AS resident,
             InputData AS input
         WHERE
             (
