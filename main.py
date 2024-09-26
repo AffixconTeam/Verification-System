@@ -32,9 +32,9 @@ class UserData(BaseModel):
 @app.post("/verify_user/")
 def verify_user(data: UserData):
 
-    if data.country_prefix  == 'au':
+    if data["country_prefix"] == 'au':
         table = "AU_RESIDENTIAL"
-    elif data.country_prefix  == 'nz':
+    elif data["country_prefix"] == 'nz':
         table = "NZ_RESIDENTIAL"
 
     try:
