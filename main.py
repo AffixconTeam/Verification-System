@@ -31,13 +31,14 @@ class UserData(BaseModel):
 
 @app.post("/verify_user/")
 def verify_user(data: UserData):
-    data = UserData(**data)
 
     if data.country_prefix  == 'au':
         table = "AU_RESIDENTIAL"
     elif data.country_prefix  == 'nz':
         table = "NZ_RESIDENTIAL"
-
+    else:
+        raise HTTPException(status_code=400, detail="Invalid country prefix")
+    
     try:
         cursor = conn.cursor()
         query = f"""
@@ -51,9 +52,10 @@ def verify_user(data: UserData):
             SELECT
                 First_name, middle_name, sur_name, dob, ad1, suburb, state, postcode, PHONE2_MOBILE, EMAILADDRESS
             FROM
-                DATA_VERIFICATION.PUBLIC.{table} AS resident,
+                DATA_VERIFICATION.PUBLIC.{table} AS resident
+            JOIN
                 InputData AS input
-            WHERE
+            ON
                 (
                     (LOWER(input.sur_name_input) IS NOT NULL AND LOWER(input.sur_name_input) != '' AND LOWER(resident.sur_name) LIKE LOWER(input.sur_name_input))
                     OR (LOWER(input.middle_name_input) IS NOT NULL AND LOWER(input.middle_name_input) != '' AND LOWER(resident.middle_name) = LOWER(input.middle_name_input))
