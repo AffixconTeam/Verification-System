@@ -29,10 +29,10 @@ class UserData(BaseModel):
 
 # def verify_function(data: UserData):
 
-
-
 @app.post("/verify_user/")
 def verify_user(data: UserData):
+    data = UserData(**data)
+
     if data.country_prefix  == 'au':
         table = "AU_RESIDENTIAL"
     elif data.country_prefix  == 'nz':
