@@ -6,12 +6,30 @@ import snowflake.connector
 from pydantic import BaseModel
 import uvicorn
 from fuzzywuzzy import fuzz
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, HTTPException, status
 import io
 from datetime import datetime
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 app = FastAPI()
 
+# Simple basic authentication
+security = HTTPBasic()
+
+# Hardcoded test user
+test_user = {
+    "username": "testuser",
+    "password": "affixcon1234"
+}
+
+def verify_credentials(credentials: HTTPBasicCredentials):
+    if credentials.username == test_user["username"] and credentials.password == test_user["password"]:
+        return {"username": credentials.username}
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Incorrect username or password",
+        headers={"WWW-Authenticate": "Basic"},
+    )
 
 class UserData(BaseModel):
     # country_prefix: str
@@ -452,9 +470,14 @@ async def batch_process(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# @app.get("/")
+# def read_root():
+#     return {"message": "Welcome to the Data Verification API"}
+
 @app.get("/")
-def read_root():
-    return {"message": "Welcome to the Data Verification API"}
+def read_root(credentials: HTTPBasicCredentials = Depends(security)):
+    user = verify_credentials(credentials)
+    return {"message": f"Welcome to the Data Verification API, {user['username']}"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000)
