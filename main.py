@@ -48,7 +48,8 @@ class UserData(BaseModel):
 # def verify_function(data: UserData):
 
 @app.post("/verify_user/")
-def verify_user(data: UserData):
+def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(security)):
+    verify_credentials(credentials)
     
     # data = UserData(**data)
     # if data["country_prefix"] == 'au':
@@ -254,7 +255,8 @@ def verify_user(data: UserData):
 
 
 @app.post("/batch_process/")
-async def batch_process(file: UploadFile = File(...)):
+async def batch_process(file: UploadFile = File(...), credentials: HTTPBasicCredentials = Depends(security)):
+    verify_credentials(credentials)
     try:
         # Read CSV file as pandas DataFrame
         contents = await file.read()
@@ -477,7 +479,7 @@ async def batch_process(file: UploadFile = File(...)):
 @app.get("/")
 def read_root(credentials: HTTPBasicCredentials = Depends(security)):
     user = verify_credentials(credentials)
-    return {"message": f"Welcome to the Data Verification API, {user['username']}"}
+    return {"message": "Welcome to the Data Verification API"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000)
