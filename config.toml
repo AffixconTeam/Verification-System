@@ -1,8 +1,8 @@
-[database]
-user = "TuanSeedin"
-password = "J!2af!G1j"
-account = "tannder-lz30435"
+[snowflake]
+user = "TeamAffix"
+password = "IDnoCoUC!jem2N"
+account = "bu13910.ap-south-1"
 warehouse = "COMPUTE_WH"
-database = "DATA_VERIFICATION"
-schema = "PUBLIC"
+database = "KYC"
+schema = " SHARED_DATA"
 role = "ACCOUNTADMIN"

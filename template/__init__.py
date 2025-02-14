@@ -22,13 +22,13 @@ import os
 config = toml.load("config.toml")
 
 # Set environment variables
-os.environ["user"] = config["database"]["user"]
-os.environ["password"] = config["database"]["password"]
-os.environ["account"] = config["database"]["account"]
-os.environ["warehouse"] = config["database"]["warehouse"]
-os.environ["database"] = config["database"]["database"]
-os.environ["schema"] = config["database"]["schema"]
-os.environ["role"] = config["database"]["role"]
+os.environ["user"] = config["snowflake"]["user"]
+os.environ["password"] = config["snowflake"]["password"]
+os.environ["account"] = config["snowflake"]["account"]
+os.environ["warehouse"] = config["snowflake"]["warehouse"]
+os.environ["database"] = config["snowflake"]["database"]
+os.environ["schema"] = config["snowflake"]["schema"]
+os.environ["role"] = config["snowflake"]["role"]
 
 
 import snowflake.connector
@@ -43,3 +43,8 @@ conn = snowflake.connector.connect(
     schema=os.getenv('schema'),
     role = os.getenv('role')
 )
+
+test_user = {
+    "username": "testuser",
+    "password": "affixcon1234"
+}

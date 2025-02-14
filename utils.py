@@ -4,6 +4,21 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
+
+def build_match_conditions(name, column_name, reference_column):
+    if name:
+        return f"""
+            CASE
+                WHEN '{name}' != '' AND 
+                    {' OR '.join([f"{reference_column} ILIKE '%' || '{part}' || '%'" for part in name.split()])}
+                THEN 1.0
+                WHEN '{name}' != '' AND 
+                    {' OR '.join([f"{column_name}_SOUNDEX = SOUNDEX('{part}')" for part in name.split()])}
+                THEN 0.8
+                ELSE 0
+            END
+        """
+    return '0'
 #-----------------------------------------Name Components -------------------------------------------------------------=
 name_match_actions = {
     'exact': 'E',
@@ -450,7 +465,58 @@ def address_parsing(ad1):
         }
         return source_output
 #---------------------------------------------------------------------------------------------------------------------=
+def get_mobile_email_matching_level(df,dob,mobile,email,name_matching_score,address_matching_weights):
 
+    levels = []
+    # Define the score ranges and their corresponding levels
+    name_score_levels = {
+        (97, 100): 'FullName',
+        (75, 97): 'PartialName',
+    }
+
+    # Check name matching level
+    for score_range, level in name_score_levels.items():
+        if score_range[0] <= name_matching_score <= score_range[1]:
+            levels.append(f'{level} - {int(name_matching_score)}'+"%")
+
+    # if 'Phone2_Mobile' in df.columns and pd.notna(df['Phone2_Mobile'].iloc[0]) and mobile !='' and str(df['Phone2_Mobile'].iloc[0]) == (mobile):
+    #     levels.append('Mobile')
+    # if (df['EMAILADDRESS'][0] is not None and (df['EMAILADDRESS'][0] in df['EMAILADDRESS'][0] and df['EMAILADDRESS'][0] != "") and df['EMAILADDRESS'][0] == email):
+    #     levels.append('Email')
+    # if 'MOBILE' in df.columns and pd.notna(df['MOBILE'].iloc[0]) and mobile !='' and str(int(df['MOBILE'].iloc[0])) == (mobile):
+    if 'MOBILE' in df.columns and (df['MOBILE'].iloc[0] !="") and mobile !='' and str(int(df['MOBILE'].iloc[0])) == (mobile):
+        levels.append('Mobile')
+    if 'EMAIL' in df.columns and (df['EMAIL'][0] is not None and (df['EMAIL'][0] in df['EMAIL'][0] and df['EMAIL'][0] != "") and df['EMAIL'][0] == email):
+        levels.append('Email')
+    return levels
+
+
+def append_mobile_email_verification(result, verified_by =False):
+    # verified_by = result['Overall Matching Level1'][0]
+    verified_by = result['Overall Matching Level'][0]
+
+    name_terms = ["FullName", "PartialName"]
+    mobile_term = "Mobile"
+    email_term = "Email"
+
+
+    name_check = any(term in verified_by for term in name_terms)
+    mobile_check = mobile_term in verified_by
+    email_check = email_term in verified_by
+
+    if name_check and mobile_check and email_check:
+        # indexes['Sources'][index].append('M1')
+        if verified_by:
+            return "P1"
+    elif name_check and mobile_check:
+        # indexes['Sources'][index].append('N1')
+        if verified_by:
+            return "P2"
+    elif name_check and email_check:
+        # indexes['Sources'][index].append('M2')
+        if verified_by:
+            return "P3"
+    return "No Match"
 
 def get_matching_level(df,dob,mobile,email,name_matching_score,address_matching_weights):
 
@@ -479,9 +545,9 @@ def get_matching_level(df,dob,mobile,email,name_matching_score,address_matching_
     if 'DOB' in df.columns and pd.notna(df.DOB.iloc[0]) and str(df.DOB.iloc[0]) == dob:
         levels.append('DOB - 100%')
 
-    elif 'PHONE2_MOBILE' in df.columns and pd.notna(df.PHONE2_MOBILE.iloc[0]) and df.PHONE2_MOBILE.iloc[0] == mobile:
+    if 'MOBILE' in df.columns and pd.notna(df.MOBILE.iloc[0]) and df.MOBILE.iloc[0] == mobile:
         levels.append('Mobile - 100%')
-    elif ((df.EMAILADDRESS[0] in df.EMAILADDRESS[0] and df.EMAILADDRESS[0] != "") and df.EMAILADDRESS[0] == email):
+    if ((df.EMAIL[0] in df.EMAIL[0] and df.EMAIL[0] != "") and df.EMAIL[0] == email):
         levels.append('Email - 100%')
 
     return levels
@@ -489,7 +555,7 @@ def get_matching_level(df,dob,mobile,email,name_matching_score,address_matching_
 
 
 def append_based_on_verification(Overall_Matching_Level, verified_by =False):
-    verified_by = Overall_Matching_Level
+    verified_by = Overall_Matching_Level['Overall Matching Level'][0]
     name_terms = ["FullName", "PartialName"]
     address_terms = ["Address", "PartialAddress"]
     dob_term = "DOB"
