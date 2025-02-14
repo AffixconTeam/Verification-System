@@ -490,8 +490,15 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
         # else:
             # st.dataframe(similarity_returned_df.reindex(col_order), width=550, height=480)  
             similarity_returned_df = similarity_returned_df.reindex(col_order)  
-        print(f"Execution time: {time.time() - start_time} seconds")
-        return df_transposed_new.to_dict(),system_returned_df.rename(columns={'Results':'System Returned Data'}).to_dict(), similarity_returned_df.rename(columns={'Results':'Similarity Returned Data'}).to_dict()
+        execution_time = time.time() - start_time
+        print(f"Execution time: {execution_time} seconds")
+        return {
+            "Time": execution_time,
+            "Data": df_transposed_new.to_dict(),
+            "System Returned Data": system_returned_df.rename(columns={'Results':'System Returned Data'}).to_dict(),
+            "Similarity Returned Data": similarity_returned_df.rename(columns={'Results':'Similarity Returned Data'}).to_dict()
+        }
+        # return df_transposed_new.to_dict(),system_returned_df.rename(columns={'Results':'System Returned Data'}).to_dict(), similarity_returned_df.rename(columns={'Results':'Similarity Returned Data'}).to_dict()
         
         """
         break
