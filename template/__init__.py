@@ -44,6 +44,16 @@ conn = snowflake.connector.connect(
     role = os.getenv('role')
 )
 
+conn_params = {
+    'user': os.getenv('user'),
+    'password': os.getenv('password'),
+    'account': os.getenv('account'),
+    'warehouse': os.getenv('warehouse'),
+    'database': os.getenv('database'),
+    'schema': os.getenv('schema'),
+    'role': os.getenv('role')
+}
+
 test_user = {
     "username": "testuser",
     "password": "affixcon1234"

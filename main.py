@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import textdistance
 import pandas as pd
-from template import conn,test_user
+from template import conn,test_user,conn_params
 from utils import *
 import uvicorn
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -12,6 +12,9 @@ from fuzzywuzzy import fuzz
 from input import country_sources
 from datetime import date
 import time
+from snowflake.snowpark.context import get_active_session
+from snowflake.snowpark.session import Session
+
 
 app = FastAPI()
 
@@ -52,7 +55,8 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
     start_time = time.time()
 
     try:
-        cursor = conn.cursor()
+        # cursor = conn.cursor()
+        session = Session.builder.configs(conn_params).create()
         first_name_condition = build_match_conditions(data.first_name.upper(), 'GIVEN_NAME_1','FULL_NAME') if data.first_name else "0"
         middle_name_condition = build_match_conditions(data.middle_name.upper(), 'GIVEN_NAME_2','FULL_NAME') if data.middle_name else "0"
         sur_name_condition = build_match_conditions(data.sur_name.upper(), 'SURNAME','FULL_NAME') if data.sur_name else "0"
@@ -105,22 +109,23 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
         ORDER BY (first_name_score + middle_name_score + sur_name_score + dob_score ) DESC
         --   + addressElement1_score + addressElement2_score + addressElement3_score \
         --   + addressElement4_score) DESC
-        LIMIT 1000;
+        LIMIT 100;
         """
 
                 
-        cursor.execute(query)
+        # cursor.execute(query)
+
         # df = cursor.fetch_pandas_all()
-        batches = cursor.fetch_pandas_batches()
+        # batches = session.sql(query).to_pandas_batches()
 
-        df = pd.concat(batches, ignore_index=True)
+        # df = pd.concat(batches, ignore_index=True)
+        df = session.sql(query).to_pandas() 
 
-        # return df.head(1).to_dict(orient='records')[0]
         end_time = time.time()
 
         df['time']=int((end_time - start_time) * 1000)
 
-        # df_selected = df.head(1)
+        df_selected = df.head(1)
     
         if df.empty:
             raise HTTPException(status_code=404, detail="No match found")
@@ -137,6 +142,8 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
         #     "mobile": df_selected.MOBILE[0],
         #     "email": df_selected.EMAIL[0]
         # }
+
+
 
         full_name_input = data.first_name.lower() + " " + data.middle_name.lower() + " " + data.sur_name.lower()
         # st.write(first_name+" "+middle_name+" "+sur_name)
@@ -679,7 +686,8 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
         raise HTTPException(status_code=500, detail=f"Error executing query: {e}")
 
     finally:
-        cursor.close()
+        # cursor.close()
+        pass
 
 
 @app.get("/")

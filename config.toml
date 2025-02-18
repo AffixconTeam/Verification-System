@@ -1,7 +1,7 @@
 [snowflake]
 user = "TeamAffix"
 password = "IDnoCoUC!jem2N"
-account = "bu13910.ap-south-1"
+account = "qb60860.ap-south-1"
 warehouse = "COMPUTE_WH"
 database = "KYC"
 schema = " SHARED_DATA"

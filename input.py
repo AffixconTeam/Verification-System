@@ -28,7 +28,7 @@ country_sources = {
         "email" : "andrew.jb@xtra.co.nz"
             },
     'mx' : {
-        'db_path': "mx.db",
+        'db_path': "MEXICO",
         'table_name': "MEXICO_1M_RECORDS",
         'first_name':'MARIA',
         "middle_name" : 'EUGENIA HERNANDEZ',
