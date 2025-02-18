@@ -110,7 +110,11 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
 
                 
         cursor.execute(query)
-        df = cursor.fetch_pandas_all()
+        # df = cursor.fetch_pandas_all()
+        batches = cursor.fetch_pandas_batches()
+
+        df = pd.concat(batches, ignore_index=True)
+
         # return df.head(1).to_dict(orient='records')[0]
         end_time = time.time()
 
