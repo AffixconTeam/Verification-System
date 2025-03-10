@@ -12,8 +12,9 @@ from fuzzywuzzy import fuzz
 from input import country_sources
 from datetime import date
 import time
-from snowflake.snowpark.context import get_active_session
-from snowflake.snowpark.session import Session
+import sqlite3
+# from snowflake.snowpark.context import get_active_session
+from snowflake.snowpark import Session
 
 
 app = FastAPI()
@@ -57,6 +58,7 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
     try:
         # cursor = conn.cursor()
         session = Session.builder.configs(conn_params).create()
+        # session = get_active_session()
         first_name_condition = build_match_conditions(data.first_name.upper(), 'GIVEN_NAME_1','FULL_NAME') if data.first_name else "0"
         middle_name_condition = build_match_conditions(data.middle_name.upper(), 'GIVEN_NAME_2','FULL_NAME') if data.middle_name else "0"
         sur_name_condition = build_match_conditions(data.sur_name.upper(), 'SURNAME','FULL_NAME') if data.sur_name else "0"
@@ -109,7 +111,7 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
         ORDER BY (first_name_score + middle_name_score + sur_name_score + dob_score ) DESC
         --   + addressElement1_score + addressElement2_score + addressElement3_score \
         --   + addressElement4_score) DESC
-        LIMIT 100;
+        LIMIT 10;
         """
 
                 
@@ -119,7 +121,7 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
         # batches = session.sql(query).to_pandas_batches()
 
         # df = pd.concat(batches, ignore_index=True)
-        df = session.sql(query).to_pandas() 
+        df = session.sql(query).collect()
 
         end_time = time.time()
 
@@ -511,6 +513,8 @@ def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depends(secu
         }
         # return df_transposed_new.to_dict(),system_returned_df.rename(columns={'Results':'System Returned Data'}).to_dict(), similarity_returned_df.rename(columns={'Results':'Similarity Returned Data'}).to_dict()
         
+    
+
         """
         break
     with col11:        

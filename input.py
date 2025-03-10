@@ -29,7 +29,8 @@ country_sources = {
             },
     'mx' : {
         'db_path': "MEXICO",
-        'table_name': "MEXICO_1M_RECORDS",
+        # "db_path": "mx.db",
+        'table_name': "MEXICO_10K_RECORDS",
         'first_name':'MARIA',
         "middle_name" : 'EUGENIA HERNANDEZ',
         'sur_name':'SEGOVIA',
@@ -44,7 +45,7 @@ country_sources = {
             },
     'indonisia' : {
         'db_path': "INDONISIA",
-        'table_name': "INDONISIA_1M_RECORDS",
+        'table_name': "INDONISIA_10K_RECORDS",
         'first_name':'FARHAN',
         # "middle_name" : 'GIAN JUWANDA',
         "middle_name" : 'GIAN',

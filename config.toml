@@ -1,8 +1,8 @@
 [snowflake]
-user = "TeamAffix"
+user = "TestAccount"
 password = "IDnoCoUC!jem2N"
-account = "qb60860.ap-south-1"
+account = "FHZXFQT-AD94045"
 warehouse = "COMPUTE_WH"
-database = "KYC"
-schema = " SHARED_DATA"
+database = "ARTIFACTS"
+schema = " PUBLIC"
 role = "ACCOUNTADMIN"
