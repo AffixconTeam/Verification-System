@@ -700,4 +700,4 @@ async def read_root(credentials: HTTPBasicCredentials = Depends(security)):
     return {"message": "Welcome to the User Verification API"}
 
 if __name__ == "__main__":
-    uvicorn.run("main2:app", host="0.0.0.0", port=8000)
+    uvicorn.run("test:app", host="0.0.0.0", port=8000)
