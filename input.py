@@ -45,7 +45,7 @@ country_sources = {
             },
     'indonisia' : {
         'db_path': "INDONISIA",
-        'table_name': "INDONISIA_ALL_RECORDS",
+        'table_name': "INDONISIA_10K_RECORDS",
         'first_name':'FARHAN',
         # "middle_name" : 'GIAN JUWANDA',
         "middle_name" : 'GIAN',
