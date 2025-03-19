@@ -410,7 +410,7 @@ async def verify_user(data: UserData, credentials: HTTPBasicCredentials = Depend
         # }
         
         return {
-            # "Time": execution_time,
+            "Time": execution_time,
             **df_transposed_new[['Results']].rename(columns={'Results':'Summary'}).to_dict(),
             **system_returned_df[['Results']].rename(columns={'Results':'ReturnItems'}).to_dict(),
             **similarity_returned_df.rename(columns={'Results':'Scoring'}).to_dict()
