@@ -2,7 +2,7 @@
 user = "TestAccount"
 password = "IDnoCoUC!jem2N"
 account = "FHZXFQT-AD94045"
-warehouse = "COMPUTE_WH"
+warehouse = "FAST_WH"
 database = "ARTIFACTS"
 schema = " PUBLIC"
 role = "ACCOUNTADMIN"
