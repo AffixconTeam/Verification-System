@@ -4,21 +4,32 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-
 def build_match_conditions(name, column_name, reference_column):
     if name:
         return f"""
             CASE
                 WHEN '{name}' != '' AND 
-                    {' OR '.join([f"{reference_column} ILIKE '%' || '{part}' || '%'" for part in name.split()])}
+                    {' OR '.join([f"{reference_column} LIKE '%' || '{part}' || '%'" for part in name.split()])}
                 THEN 1.0
-                WHEN '{name}' != '' AND 
-                    {' OR '.join([f"{column_name}_SOUNDEX = SOUNDEX('{part}')" for part in name.split()])}
-                THEN 0.8
                 ELSE 0
             END
         """
     return '0'
+
+# def build_match_conditions(name, column_name, reference_column):
+#     if name:
+#         return f"""
+#             CASE
+#                 WHEN '{name}' != '' AND 
+#                     {' OR '.join([f"{reference_column} LIKE '%' || '{part}' || '%'" for part in name.split()])}
+#                 THEN 1.0
+#                 WHEN '{name}' != '' AND 
+#                     {' OR '.join([f"SOUNDEX({column_name}) = SOUNDEX('{part}')" for part in name.split()])}
+#                 THEN 0.8
+#                 ELSE 0
+#             END
+#         """
+#     return '0'
 #-----------------------------------------Name Components -------------------------------------------------------------=
 name_match_actions = {
     'exact': 'E',
